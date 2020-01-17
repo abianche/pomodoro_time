@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pomodoro Time',
       home: HomePage(),
-    );  
+    );
   }
 }
 
@@ -18,8 +18,17 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Icon(Icons.play_arrow),
+      body: Column(
+        children: <Widget>[
+          Icon(Icons.play_arrow),
+          FlatButton(
+            child: Text("TEST"),
+            onPressed: () async {
+              await showTimePicker(
+                  context: context, initialTime: TimeOfDay.now());
+            },
+          ),
+        ],
       ),
     );
   }
