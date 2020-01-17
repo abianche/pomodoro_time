@@ -3,6 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pomodoro_time/models/settings.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:pomodoro_time/views/settings_viewmodel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({
@@ -30,6 +31,13 @@ class _SettingsViewState extends State<SettingsView> {
           _longBreakSliderValue = vm.longBreak.toDouble();
         });
       },
+      onDidChange: (vm) {
+        setState(() {
+          _workSliderValue = vm.work.toDouble();
+          _shortBreakSliderValue = vm.shortBreak.toDouble();
+          _longBreakSliderValue = vm.longBreak.toDouble();
+        });
+      },
       builder: (context, vm) => Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 50.0),
@@ -44,7 +52,7 @@ class _SettingsViewState extends State<SettingsView> {
                     _workSliderValue = value;
                   });
                 },
-                onChangeEnd: vm.setWorkTime,
+                onChangeEnd: (value) => vm.setWorkTime(value.toInt()),
                 divisions: Settings.max_work_length,
                 label: _workSliderValue.toInt().toString(),
               ),
@@ -57,7 +65,7 @@ class _SettingsViewState extends State<SettingsView> {
                     _shortBreakSliderValue = value;
                   });
                 },
-                onChangeEnd: vm.setShortBreakTime,
+                onChangeEnd: (value) => vm.setShortBreakTime(value.toInt()),
                 divisions: Settings.max_short_break_length,
                 label: _shortBreakSliderValue.toInt().toString(),
               ),
@@ -70,21 +78,54 @@ class _SettingsViewState extends State<SettingsView> {
                     _longBreakSliderValue = value;
                   });
                 },
-                onChangeEnd: vm.setLongBreakTime,
+                onChangeEnd: (value) => vm.setLongBreakTime(value.toInt()),
                 divisions: Settings.max_long_break_length,
                 label: _longBreakSliderValue.toInt().toString(),
               ),
               SizedBox(
                 height: 100,
               ),
-              Center(
-                child: Text(
-                  "W ${vm.work}   S ${vm.shortBreak}   L ${vm.longBreak}",
-                  style: TextStyle(
-                    fontSize: 48.0,
-                  ),
+              Text(
+                "W ${vm.work}   S ${vm.shortBreak}   L ${vm.longBreak}",
+                style: TextStyle(
+                  fontSize: 48.0,
                 ),
-              )
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              FlatButton.icon(
+                icon: Icon(Icons.save),
+                onPressed: () async {
+                  SharedPreferences preferences =
+                      await SharedPreferences.getInstance();
+
+                  preferences.setInt("setting_work", vm.work);
+                  preferences.setInt("setting_short_break", vm.shortBreak);
+                  preferences.setInt("setting_long_break", vm.longBreak);
+                },
+                label: Text("Save"),
+              ),
+              FlatButton.icon(
+                icon: Icon(Icons.restore),
+                onPressed: () async {
+                  SharedPreferences preferences =
+                      await SharedPreferences.getInstance();
+
+                  vm.setWorkTime(
+                    preferences.getInt("setting_work") ?? Settings.default_work,
+                  );
+                  vm.setShortBreakTime(
+                    preferences.getInt("setting_short_break") ??
+                        Settings.default_short_break,
+                  );
+                  vm.setLongBreakTime(
+                    preferences.getInt("setting_long_break") ??
+                        Settings.default_long_break,
+                  );
+                },
+                label: Text("Reset"),
+              ),
             ],
           ),
         ),

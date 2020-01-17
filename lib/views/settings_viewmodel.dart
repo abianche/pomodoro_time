@@ -8,9 +8,9 @@ class SettingsViewModel {
   final int shortBreak;
   final int longBreak;
 
-  final Function setWorkTime;
-  final Function setShortBreakTime;
-  final Function setLongBreakTime;
+  final Function(int) setWorkTime;
+  final Function(int) setShortBreakTime;
+  final Function(int) setLongBreakTime;
 
   SettingsViewModel({
     @required this.work,
@@ -27,14 +27,14 @@ class SettingsViewModel {
       work: store.state.settings.work,
       shortBreak: store.state.settings.shortBreak,
       longBreak: store.state.settings.longBreak,
-      setWorkTime: (double time) => store.dispatch(
-        SetSettingsAction(work: time.toInt()),
+      setWorkTime: (int time) => store.dispatch(
+        SetSettingsAction(work: time),
       ),
-      setShortBreakTime: (double time) => store.dispatch(
-        SetSettingsAction(shortBreak: time.toInt()),
+      setShortBreakTime: (int time) => store.dispatch(
+        SetSettingsAction(shortBreak: time),
       ),
-      setLongBreakTime: (double time) => store.dispatch(
-        SetSettingsAction(longBreak: time.toInt()),
+      setLongBreakTime: (int time) => store.dispatch(
+        SetSettingsAction(longBreak: time),
       ),
     );
   }
