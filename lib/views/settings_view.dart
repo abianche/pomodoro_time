@@ -5,16 +5,16 @@ import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:pomodoro_time/views/settings_viewmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsView extends StatefulWidget {
-  const SettingsView({
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({
     Key key,
   }) : super(key: key);
 
   @override
-  _SettingsViewState createState() => _SettingsViewState();
+  _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsViewState extends State<SettingsView> {
+class _SettingsPageState extends State<SettingsPage> {
   double _workSliderValue = Settings.default_work.toDouble();
   double _shortBreakSliderValue = Settings.default_short_break.toDouble();
   double _longBreakSliderValue = Settings.default_long_break.toDouble();
