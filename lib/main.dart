@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:pomodoro_time/redux/app_state.dart';
+import 'package:pomodoro_time/redux/reducer.dart';
+import 'package:pomodoro_time/views/settings_view.dart';
+import 'package:redux/redux.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Pomodoro Time',
-      home: HomePage(),
+    final Store<AppState> appStore = Store<AppState>(
+      appStateReducer,
+      initialState: AppState.initialState(),
+    );
+
+    return StoreProvider(
+      store: appStore,
+      child: MaterialApp(
+        title: 'Pomodoro Time',
+        home: HomePage(),
+      ),
     );
   }
 }
@@ -18,18 +31,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Icon(Icons.play_arrow),
-          FlatButton(
-            child: Text("TEST"),
-            onPressed: () async {
-              await showTimePicker(
-                  context: context, initialTime: TimeOfDay.now());
-            },
-          ),
-        ],
-      ),
+      body: SettingsView(),
     );
   }
 }
