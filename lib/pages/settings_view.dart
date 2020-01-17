@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pomodoro_time/models/settings.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
-import 'package:pomodoro_time/views/settings_viewmodel.dart';
+import 'package:pomodoro_time/pages/settings_viewmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
