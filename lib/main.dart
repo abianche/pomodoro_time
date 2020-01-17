@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:pomodoro_time/redux/reducer.dart';
-import 'package:pomodoro_time/views/settings_view.dart';
+import 'package:pomodoro_time/views/home_view.dart';
 import 'package:redux/redux.dart';
 
 void main() => runApp(MyApp());
@@ -21,17 +21,6 @@ class MyApp extends StatelessWidget {
         title: 'Pomodoro Time',
         home: HomePage(),
       ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  HomePage({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SettingsView(),
     );
   }
 }
