@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro_time/pages/settings_view.dart';
+import 'package:pomodoro_time/pages/settings_page.dart';
+import 'package:pomodoro_time/routes.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key key}) : super(key: key);
@@ -12,6 +13,8 @@ class HomePage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.settings),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(AppRoutes.settings),
           )
         ],
       ),

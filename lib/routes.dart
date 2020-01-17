@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro_time/pages/home_view.dart';
-import 'package:pomodoro_time/pages/settings_view.dart';
+import 'package:pomodoro_time/pages/home_page.dart';
+import 'package:pomodoro_time/pages/settings_page.dart';
 
 class AppRoutes {
   static const root = "/";
