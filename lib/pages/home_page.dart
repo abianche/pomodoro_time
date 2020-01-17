@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro_time/pages/settings_page.dart';
 import 'package:pomodoro_time/routes.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,7 +17,9 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: SettingsPage(),
+      body: Center(
+        child: Text("HOME"),
+      ),
     );
   }
 }

@@ -3,9 +3,8 @@ import 'package:pomodoro_time/pages/home_page.dart';
 import 'package:pomodoro_time/pages/settings_page.dart';
 
 class AppRoutes {
-  static const root = "/";
-  static const home = "/home";
-  static const settings = "/home/settings";
+  static const home = "/";
+  static const settings = "/settings";
 }
 
 Route<dynamic> buildOnGenerateRuoute(RouteSettings settings) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:pomodoro_time/constants.dart';
 import 'package:pomodoro_time/models/settings.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:pomodoro_time/pages/settings_viewmodel.dart';
@@ -38,8 +39,11 @@ class _SettingsPageState extends State<SettingsPage> {
           _longBreakSliderValue = vm.longBreak.toDouble();
         });
       },
-      builder: (context, vm) => Center(
-        child: Padding(
+      builder: (context, vm) => Scaffold(
+        appBar: AppBar(
+          title: Text("Settings"),
+        ),
+        body: Padding(
           padding: const EdgeInsets.only(top: 50.0),
           child: Column(
             children: <Widget>[
@@ -52,7 +56,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     _workSliderValue = value;
                   });
                 },
-                onChangeEnd: (value) => vm.setWorkTime(value.toInt()),
+                onChangeEnd: (value) async {
+                  SharedPreferences preferences =
+                      await SharedPreferences.getInstance();
+                  preferences.setInt(setting_work, value.toInt());
+
+                  vm.setWorkTime(value.toInt());
+                },
                 divisions: Settings.max_work_length,
                 label: _workSliderValue.toInt().toString(),
               ),
@@ -65,7 +75,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     _shortBreakSliderValue = value;
                   });
                 },
-                onChangeEnd: (value) => vm.setShortBreakTime(value.toInt()),
+                onChangeEnd: (value) async {
+                  SharedPreferences preferences =
+                      await SharedPreferences.getInstance();
+                  preferences.setInt(setting_short_break, value.toInt());
+
+                  vm.setShortBreakTime(value.toInt());
+                },
                 divisions: Settings.max_short_break_length,
                 label: _shortBreakSliderValue.toInt().toString(),
               ),
@@ -78,7 +94,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     _longBreakSliderValue = value;
                   });
                 },
-                onChangeEnd: (value) => vm.setLongBreakTime(value.toInt()),
+                onChangeEnd: (value) async {
+                  SharedPreferences preferences =
+                      await SharedPreferences.getInstance();
+                  preferences.setInt(setting_long_break, value.toInt());
+
+                  vm.setLongBreakTime(value.toInt());
+                },
                 divisions: Settings.max_long_break_length,
                 label: _longBreakSliderValue.toInt().toString(),
               ),
@@ -90,41 +112,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 style: TextStyle(
                   fontSize: 48.0,
                 ),
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              FlatButton.icon(
-                icon: Icon(Icons.save),
-                onPressed: () async {
-                  SharedPreferences preferences =
-                      await SharedPreferences.getInstance();
-
-                  preferences.setInt("setting_work", vm.work);
-                  preferences.setInt("setting_short_break", vm.shortBreak);
-                  preferences.setInt("setting_long_break", vm.longBreak);
-                },
-                label: Text("Save"),
-              ),
-              FlatButton.icon(
-                icon: Icon(Icons.restore),
-                onPressed: () async {
-                  SharedPreferences preferences =
-                      await SharedPreferences.getInstance();
-
-                  vm.setWorkTime(
-                    preferences.getInt("setting_work") ?? Settings.default_work,
-                  );
-                  vm.setShortBreakTime(
-                    preferences.getInt("setting_short_break") ??
-                        Settings.default_short_break,
-                  );
-                  vm.setLongBreakTime(
-                    preferences.getInt("setting_long_break") ??
-                        Settings.default_long_break,
-                  );
-                },
-                label: Text("Reset"),
               ),
             ],
           ),
