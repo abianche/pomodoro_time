@@ -63,7 +63,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   vm.setWorkTime(value.toInt());
                 },
-                divisions: Settings.max_work_length,
+                divisions: Settings.max_work_length - Settings.min_work_length,
                 label: _workSliderValue.toInt().toString(),
               ),
               Slider.adaptive(
@@ -82,7 +82,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   vm.setShortBreakTime(value.toInt());
                 },
-                divisions: Settings.max_short_break_length,
+                divisions: Settings.max_short_break_length -
+                    Settings.min_short_break_length,
                 label: _shortBreakSliderValue.toInt().toString(),
               ),
               Slider.adaptive(
@@ -101,7 +102,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   vm.setLongBreakTime(value.toInt());
                 },
-                divisions: Settings.max_long_break_length,
+                divisions: Settings.max_long_break_length -
+                    Settings.min_long_break_length,
                 label: _longBreakSliderValue.toInt().toString(),
               ),
               SizedBox(
@@ -110,7 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Text(
                 "W ${vm.work}   S ${vm.shortBreak}   L ${vm.longBreak}",
                 style: TextStyle(
-                  fontSize: 48.0,
+                  fontSize: 32.0,
                 ),
               ),
             ],
