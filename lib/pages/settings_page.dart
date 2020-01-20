@@ -57,6 +57,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   });
                 },
                 onChangeEnd: (value) async {
+                  if (value == vm.work) return;
+
                   SharedPreferences preferences =
                       await SharedPreferences.getInstance();
                   preferences.setInt(setting_work, value.toInt());
@@ -76,6 +78,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   });
                 },
                 onChangeEnd: (value) async {
+                  if (value == vm.shortBreak) return;
+
                   SharedPreferences preferences =
                       await SharedPreferences.getInstance();
                   preferences.setInt(setting_short_break, value.toInt());
@@ -96,6 +100,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   });
                 },
                 onChangeEnd: (value) async {
+                  if (value == vm.longBreak) return;
+
                   SharedPreferences preferences =
                       await SharedPreferences.getInstance();
                   preferences.setInt(setting_long_break, value.toInt());

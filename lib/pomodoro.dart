@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:pomodoro_time/pages/settings_viewmodel.dart';
+import 'package:pomodoro_time/pomodoro_viewmodel.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 
 class Pomodoro extends StatefulWidget {
@@ -17,14 +18,14 @@ class _PomodoroState extends State<Pomodoro> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, SettingsViewModel>(
-      converter: (store) => SettingsViewModel.create(store),
+    return StoreConnector<AppState, PomodoroViewModel>(
+      converter: (store) => PomodoroViewModel.create(store),
       builder: (context, vm) => Container(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text("Time"),
+              Text("Time " + kDebugMode.toString()),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
