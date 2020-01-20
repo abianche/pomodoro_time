@@ -79,6 +79,14 @@ class _PomodoroState extends State<Pomodoro> {
                   ),
                 ],
               ),
+              FlatButton.icon(
+                icon: Icon(Icons.restore),
+                label: Text("Reset"),
+                onPressed: () {
+                  timer?.cancel();
+                  vm.setState(PomodoroState.none);
+                },
+              ),
             ],
           ),
         ),
