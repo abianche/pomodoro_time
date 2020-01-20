@@ -4,7 +4,6 @@ import 'package:pomodoro_time/constants.dart';
 import 'package:pomodoro_time/models/settings.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:pomodoro_time/pages/settings_viewmodel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({
@@ -56,12 +55,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     _workSliderValue = value;
                   });
                 },
-                onChangeEnd: (value) async {
+                onChangeEnd: (value) {
                   if (value == vm.work) return;
-
-                  SharedPreferences preferences =
-                      await SharedPreferences.getInstance();
-                  preferences.setInt(setting_work, value.toInt());
 
                   vm.setWorkTime(value.toInt());
                 },
@@ -77,12 +72,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     _shortBreakSliderValue = value;
                   });
                 },
-                onChangeEnd: (value) async {
+                onChangeEnd: (value) {
                   if (value == vm.shortBreak) return;
-
-                  SharedPreferences preferences =
-                      await SharedPreferences.getInstance();
-                  preferences.setInt(setting_short_break, value.toInt());
 
                   vm.setShortBreakTime(value.toInt());
                 },
@@ -99,12 +90,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     _longBreakSliderValue = value;
                   });
                 },
-                onChangeEnd: (value) async {
+                onChangeEnd: (value) {
                   if (value == vm.longBreak) return;
-
-                  SharedPreferences preferences =
-                      await SharedPreferences.getInstance();
-                  preferences.setInt(setting_long_break, value.toInt());
 
                   vm.setLongBreakTime(value.toInt());
                 },

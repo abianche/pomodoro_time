@@ -15,3 +15,5 @@ class SetSettingsAction {
 }
 
 class ResetSettingsAction {}
+
+class LoadSettingsAction {}
