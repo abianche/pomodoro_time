@@ -102,7 +102,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Settings.min_long_break_length,
                 label: _longBreakSliderValue.toInt().toString(),
               ),
-              NumberPicker.integer(
+              NumberPicker.horizontal(
                 initialValue: _checkmarksValue,
                 minValue: 1,
                 maxValue: 10,
