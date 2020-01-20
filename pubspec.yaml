@@ -14,7 +14,7 @@ description: Pomodoro time.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.3.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -25,8 +25,10 @@ dependencies:
   cupertino_icons: ^0.1.2
 
   shared_preferences: ^0.5.6
+  
   redux: ^4.0.0
   flutter_redux: ^0.6.0
+  redux_logging: ^0.4.0
 
 dev_dependencies:
   flutter_test:
