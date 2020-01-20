@@ -25,7 +25,7 @@ String customLineFormatter(
 ) {
   return "\n" +
       "  Action     ${action.runtimeType.toString()},\n" +
-      "  Payload    {${action.toString()}},\n" +
+      "  Payload    ${action.toString()},\n" +
       "  Timestamp  ${DateTime.now()}\n" +
       "";
 }
@@ -44,6 +44,9 @@ Middleware<AppState> saveSettings() {
       if (action.longBreak != null) {
         await preferences.setInt(setting_long_break, action.longBreak);
       }
+      if (action.checkmarks != null) {
+        await preferences.setInt(setting_checkmarks, action.checkmarks);
+      }
     }
 
     next(action);
@@ -60,12 +63,15 @@ Middleware<AppState> loadSettings() {
           Settings.default_short_break;
       int longBreak =
           preferences.getInt(setting_long_break) ?? Settings.default_long_break;
+      int checkmarks =
+          preferences.getInt(setting_checkmarks) ?? Settings.default_checkmarks;
 
       store.dispatch(
         SetSettingsAction(
           work: work,
           shortBreak: shortBreak,
           longBreak: longBreak,
+          checkmarks: checkmarks,
         ),
       );
     }

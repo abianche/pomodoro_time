@@ -8,6 +8,7 @@ Settings settingsReducer(Settings state, action) {
       work: action.work ?? state.work,
       shortBreak: action.shortBreak ?? state.shortBreak,
       longBreak: action.longBreak ?? state.longBreak,
+      checkmarks: action.checkmarks ?? state.checkmarks,
     );
   }
 

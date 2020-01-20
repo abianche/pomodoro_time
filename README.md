@@ -2,6 +2,8 @@
 
 Pomodoro time.
 
+See: [Pomodoro Technique](https://en.wikipedia.org/wiki/Pomodoro_Technique)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
