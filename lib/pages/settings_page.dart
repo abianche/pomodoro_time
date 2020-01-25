@@ -40,87 +40,123 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             body: Padding(
               padding: const EdgeInsets.only(top: 50.0),
-              child: Column(
+              child: ListView(
                 children: <Widget>[
-                  Slider.adaptive(
-                    value: _workSliderValue,
-                    min: Settings.min_work_length.toDouble(),
-                    max: Settings.max_work_length.toDouble(),
-                    onChanged: (value) {
-                      setState(() {
-                        _workSliderValue = value;
-                      });
-                    },
-                    onChangeEnd: (value) {
-                      if (value == vm.work) return;
+                  Column(
+                    children: <Widget>[
+                      Text("Work"),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 24.0),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Slider.adaptive(
+                                value: _workSliderValue,
+                                min: Settings.min_work_length.toDouble(),
+                                max: Settings.max_work_length.toDouble(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _workSliderValue = value;
+                                  });
+                                },
+                                onChangeEnd: (value) {
+                                  if (value == vm.work) return;
 
-                      vm.setWorkTime(value.toInt());
-                    },
-                    divisions:
-                        Settings.max_work_length - Settings.min_work_length,
-                    label: _workSliderValue.toInt().toString(),
+                                  vm.setWorkTime(value.toInt());
+                                },
+                                divisions: Settings.max_work_length -
+                                    Settings.min_work_length,
+                                label: _workSliderValue.toInt().toString(),
+                              ),
+                            ),
+                            Text(_workSliderValue.toInt().toString())
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  Slider.adaptive(
-                    value: _shortBreakSliderValue,
-                    min: Settings.min_short_break_length.toDouble(),
-                    max: Settings.max_short_break_length.toDouble(),
-                    onChanged: (value) {
-                      setState(() {
-                        _shortBreakSliderValue = value;
-                      });
-                    },
-                    onChangeEnd: (value) {
-                      if (value == vm.shortBreak) return;
+                  Column(
+                    children: <Widget>[
+                      Text("Short break"),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 24.0),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Slider.adaptive(
+                                value: _shortBreakSliderValue,
+                                min: Settings.min_short_break_length.toDouble(),
+                                max: Settings.max_short_break_length.toDouble(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _shortBreakSliderValue = value;
+                                  });
+                                },
+                                onChangeEnd: (value) {
+                                  if (value == vm.shortBreak) return;
 
-                      vm.setShortBreakTime(value.toInt());
-                    },
-                    divisions: Settings.max_short_break_length -
-                        Settings.min_short_break_length,
-                    label: _shortBreakSliderValue.toInt().toString(),
+                                  vm.setShortBreakTime(value.toInt());
+                                },
+                                divisions: Settings.max_short_break_length -
+                                    Settings.min_short_break_length,
+                                label:
+                                    _shortBreakSliderValue.toInt().toString(),
+                              ),
+                            ),
+                            Text(_shortBreakSliderValue.toInt().toString())
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  Slider.adaptive(
-                    value: _longBreakSliderValue,
-                    min: Settings.min_long_break_length.toDouble(),
-                    max: Settings.max_long_break_length.toDouble(),
-                    onChanged: (value) {
-                      setState(() {
-                        _longBreakSliderValue = value;
-                      });
-                    },
-                    onChangeEnd: (value) {
-                      if (value == vm.longBreak) return;
+                  Column(
+                    children: <Widget>[
+                      Text("Checkmarks"),
+                      NumberPicker.horizontal(
+                        initialValue: vm.checkmarks,
+                        minValue: 1,
+                        maxValue: 10,
+                        onChanged: (value) {
+                          if (value == vm.checkmarks) return;
 
-                      vm.setLongBreakTime(value.toInt());
-                    },
-                    divisions: Settings.max_long_break_length -
-                        Settings.min_long_break_length,
-                    label: _longBreakSliderValue.toInt().toString(),
+                          setState(() => _checkmarksValue = value);
+                          vm.setCheckmarks(value.toInt());
+                        },
+                      ),
+                    ],
                   ),
-                  NumberPicker.horizontal(
-                    initialValue: vm.checkmarks,
-                    minValue: 1,
-                    maxValue: 10,
-                    onChanged: (value) {
-                      if (value == vm.checkmarks) return;
+                  Column(
+                    children: <Widget>[
+                      Text("Long break"),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 24.0),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Slider.adaptive(
+                                value: _longBreakSliderValue,
+                                min: Settings.min_long_break_length.toDouble(),
+                                max: Settings.max_long_break_length.toDouble(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _longBreakSliderValue = value;
+                                  });
+                                },
+                                onChangeEnd: (value) {
+                                  if (value == vm.longBreak) return;
 
-                      setState(() => _checkmarksValue = value);
-                      vm.setCheckmarks(value.toInt());
-                    },
-                  ),
-                  SizedBox(
-                    height: 100,
-                  ),
-                  Text(
-                    "W ${vm.work}   S ${vm.shortBreak}   L ${vm.longBreak}",
-                    style: TextStyle(
-                      fontSize: 32.0,
-                    ),
-                  ),
-                  Text(
-                    "Checkmarks: ${vm.checkmarks}",
-                    style: TextStyle(
-                      fontSize: 18.0,
-                    ),
+                                  vm.setLongBreakTime(value.toInt());
+                                },
+                                divisions: Settings.max_long_break_length -
+                                    Settings.min_long_break_length,
+                                label: _longBreakSliderValue.toInt().toString(),
+                              ),
+                            ),
+                            Text(_longBreakSliderValue.toInt().toString())
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
