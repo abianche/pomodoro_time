@@ -72,37 +72,14 @@ class _PomodoroState extends State<Pomodoro> {
   }
 
   void _startWork(PomodoroViewModel vm) {
-    timer?.cancel();
-    timer = Timer.periodic(Duration(seconds: appStore.state.settings.work),
-        (timer) {
-      timer?.cancel();
-      if (appStore.state.pomodoro.checkmarks <
-          appStore.state.settings.checkmarks) {
-        _startShortBreak(vm);
-      } else {
-        _startLongBreak(vm);
-      }
-    });
     vm.setState(PomodoroState.work);
   }
 
   void _startShortBreak(PomodoroViewModel vm) {
-    timer?.cancel();
-    timer = Timer.periodic(
-        Duration(seconds: appStore.state.settings.shortBreak), (t) {
-      timer?.cancel();
-      _startWork(vm);
-    });
     vm.setState(PomodoroState.shortBreak);
   }
 
   void _startLongBreak(PomodoroViewModel vm) {
-    timer?.cancel();
-    timer = Timer.periodic(Duration(seconds: appStore.state.settings.longBreak),
-        (t) {
-      timer?.cancel();
-      _startWork(vm);
-    });
     vm.setState(PomodoroState.longBreak);
   }
 }

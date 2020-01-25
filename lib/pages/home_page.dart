@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pomodoro_time/models/pomodoro.dart' show PomodoroState;
 import 'package:pomodoro_time/pomodoro.dart';
+import 'package:pomodoro_time/redux/actions/pomodoro_actions.dart';
 import 'package:pomodoro_time/redux/store.dart';
 import 'package:pomodoro_time/routes.dart';
 
@@ -49,6 +50,8 @@ class HomePage extends StatelessWidget {
                 if (confirmed == null || !confirmed) {
                   return;
                 }
+
+                appStore.dispatch(StopAction());
 
                 /// TODO: stop timer
                 Navigator.of(context).pushNamed(AppRoutes.settings);
