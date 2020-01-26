@@ -18,6 +18,8 @@ class _SettingsPageState extends State<SettingsPage> {
   double _workSliderValue = Settings.default_work.toDouble();
   double _shortBreakSliderValue = Settings.default_short_break.toDouble();
   double _longBreakSliderValue = Settings.default_long_break.toDouble();
+
+  /// FIXME: remove unused field
   int _checkmarksValue = Settings.default_checkmarks;
 
   @override
@@ -34,6 +36,10 @@ class _SettingsPageState extends State<SettingsPage> {
           });
         },
         builder: (context, vm) {
+          print(_workSliderValue.clamp(
+            Settings.min_work_length.toDouble(),
+            Settings.max_work_length.toDouble(),
+          ));
           return Scaffold(
             appBar: AppBar(
               title: Text("Settings"),
@@ -42,6 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.only(top: 50.0),
               child: ListView(
                 children: <Widget>[
+                  /// FIXME: extract widget
                   Column(
                     children: <Widget>[
                       Text("Work"),
@@ -51,7 +58,10 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: <Widget>[
                             Expanded(
                               child: Slider.adaptive(
-                                value: _workSliderValue,
+                                value: _workSliderValue.clamp(
+                                  Settings.min_work_length.toDouble(),
+                                  Settings.max_work_length.toDouble(),
+                                ),
                                 min: Settings.min_work_length.toDouble(),
                                 max: Settings.max_work_length.toDouble(),
                                 onChanged: (value) {
@@ -66,10 +76,22 @@ class _SettingsPageState extends State<SettingsPage> {
                                 },
                                 divisions: Settings.max_work_length -
                                     Settings.min_work_length,
-                                label: _workSliderValue.toInt().toString(),
+                                label: _workSliderValue
+                                    .clamp(
+                                      Settings.min_work_length.toDouble(),
+                                      Settings.max_work_length.toDouble(),
+                                    )
+                                    .toInt()
+                                    .toString(),
                               ),
                             ),
-                            Text(_workSliderValue.toInt().toString())
+                            Text(_workSliderValue
+                                .clamp(
+                                  Settings.min_work_length.toDouble(),
+                                  Settings.max_work_length.toDouble(),
+                                )
+                                .toInt()
+                                .toString())
                           ],
                         ),
                       ),
@@ -84,7 +106,10 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: <Widget>[
                             Expanded(
                               child: Slider.adaptive(
-                                value: _shortBreakSliderValue,
+                                value: _shortBreakSliderValue.clamp(
+                                  Settings.min_short_break_length.toDouble(),
+                                  Settings.max_short_break_length.toDouble(),
+                                ),
                                 min: Settings.min_short_break_length.toDouble(),
                                 max: Settings.max_short_break_length.toDouble(),
                                 onChanged: (value) {
@@ -99,11 +124,24 @@ class _SettingsPageState extends State<SettingsPage> {
                                 },
                                 divisions: Settings.max_short_break_length -
                                     Settings.min_short_break_length,
-                                label:
-                                    _shortBreakSliderValue.toInt().toString(),
+                                label: _shortBreakSliderValue
+                                    .clamp(
+                                      Settings.min_short_break_length
+                                          .toDouble(),
+                                      Settings.max_short_break_length
+                                          .toDouble(),
+                                    )
+                                    .toInt()
+                                    .toString(),
                               ),
                             ),
-                            Text(_shortBreakSliderValue.toInt().toString())
+                            Text(_shortBreakSliderValue
+                                .clamp(
+                                  Settings.min_short_break_length.toDouble(),
+                                  Settings.max_short_break_length.toDouble(),
+                                )
+                                .toInt()
+                                .toString())
                           ],
                         ),
                       ),
@@ -113,7 +151,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: <Widget>[
                       Text("Checkmarks"),
                       NumberPicker.horizontal(
-                        initialValue: vm.checkmarks,
+                        initialValue: vm.checkmarks.clamp(1, 10),
                         minValue: 1,
                         maxValue: 10,
                         onChanged: (value) {
@@ -134,7 +172,10 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: <Widget>[
                             Expanded(
                               child: Slider.adaptive(
-                                value: _longBreakSliderValue,
+                                value: _longBreakSliderValue.clamp(
+                                  Settings.min_long_break_length.toDouble(),
+                                  Settings.max_long_break_length.toDouble(),
+                                ),
                                 min: Settings.min_long_break_length.toDouble(),
                                 max: Settings.max_long_break_length.toDouble(),
                                 onChanged: (value) {
@@ -149,10 +190,22 @@ class _SettingsPageState extends State<SettingsPage> {
                                 },
                                 divisions: Settings.max_long_break_length -
                                     Settings.min_long_break_length,
-                                label: _longBreakSliderValue.toInt().toString(),
+                                label: _longBreakSliderValue
+                                    .clamp(
+                                      Settings.min_long_break_length.toDouble(),
+                                      Settings.max_long_break_length.toDouble(),
+                                    )
+                                    .toInt()
+                                    .toString(),
                               ),
                             ),
-                            Text(_longBreakSliderValue.toInt().toString())
+                            Text(_longBreakSliderValue
+                                .clamp(
+                                  Settings.min_long_break_length.toDouble(),
+                                  Settings.max_long_break_length.toDouble(),
+                                )
+                                .toInt()
+                                .toString())
                           ],
                         ),
                       ),
