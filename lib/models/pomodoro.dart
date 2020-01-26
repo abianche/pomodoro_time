@@ -2,6 +2,22 @@ import 'package:flutter/material.dart';
 
 enum PomodoroState { none, work, shortBreak, longBreak }
 
+/// FIXME: check where to place it
+String getStateName(PomodoroState state) {
+  switch (state) {
+    case PomodoroState.none:
+      return "";
+    case PomodoroState.work:
+      return "Work";
+    case PomodoroState.shortBreak:
+      return "Short break";
+    case PomodoroState.longBreak:
+      return "Long break";
+    default:
+      return "";
+  }
+}
+
 class Pomodoro {
   final PomodoroState state;
   final int checkmarks;
