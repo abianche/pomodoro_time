@@ -6,6 +6,7 @@ import 'package:pomodoro_time/models/pomodoro.dart';
 import 'package:pomodoro_time/pomodoro_viewmodel.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:pomodoro_time/redux/store.dart';
+import 'package:pomodoro_time/extensions.dart';
 import 'package:quiver/async.dart';
 
 class Pomodoro extends StatefulWidget {
@@ -17,7 +18,8 @@ class Pomodoro extends StatefulWidget {
 
 class _PomodoroState extends State<Pomodoro> {
   static CountdownTimer timer;
-  int elapsedSec = 0;
+  Duration elapsed = Duration.zero;
+  Duration remaining = Duration.zero;
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +34,8 @@ class _PomodoroState extends State<Pomodoro> {
                   CircularPercentIndicator(
                     radius: 150.0,
                     lineWidth: 15.0,
-                    percent: getCurrentPercentage(vm, elapsedSec / 60),
-                    center: Text("$elapsedSec s"),
+                    percent: getCurrentPercentage(vm, elapsed.inSeconds / 60),
+                    center: Text(remaining.printDuration()),
                     progressColor: Theme.of(context).primaryColor,
                     circularStrokeCap: CircularStrokeCap.round,
                     animation: true,
@@ -82,7 +84,8 @@ class _PomodoroState extends State<Pomodoro> {
                       vm.setState(PomodoroState.none);
                       timer?.cancel();
                       setState(() {
-                        elapsedSec = 0;
+                        elapsed = Duration.zero;
+                        remaining = Duration.zero;
                       });
                     },
                   ),
@@ -114,7 +117,8 @@ class _PomodoroState extends State<Pomodoro> {
         Duration(minutes: appStore.state.settings.work),
         Duration(seconds: 1),
       );
-      elapsedSec = 0;
+      elapsed = Duration.zero;
+      remaining = Duration.zero;
     });
 
     timer.listen((duration) {
@@ -123,7 +127,8 @@ class _PomodoroState extends State<Pomodoro> {
         return;
       }
       setState(() {
-        elapsedSec = duration.elapsed.inSeconds;
+        elapsed = duration.elapsed;
+        remaining = duration.remaining;
       });
     }, onDone: () {
       timer?.cancel();
@@ -148,7 +153,8 @@ class _PomodoroState extends State<Pomodoro> {
         Duration(minutes: appStore.state.settings.shortBreak),
         Duration(seconds: 1),
       );
-      elapsedSec = 0;
+      elapsed = Duration.zero;
+      remaining = Duration.zero;
     });
 
     timer.listen((duration) {
@@ -157,7 +163,8 @@ class _PomodoroState extends State<Pomodoro> {
         return;
       }
       setState(() {
-        elapsedSec = duration.elapsed.inSeconds;
+        elapsed = duration.elapsed;
+        remaining = duration.remaining;
       });
     }, onDone: () {
       timer?.cancel();
@@ -177,7 +184,8 @@ class _PomodoroState extends State<Pomodoro> {
         Duration(minutes: appStore.state.settings.longBreak),
         Duration(seconds: 1),
       );
-      elapsedSec = 0;
+      elapsed = Duration.zero;
+      remaining = Duration.zero;
     });
 
     timer.listen((duration) {
@@ -186,7 +194,8 @@ class _PomodoroState extends State<Pomodoro> {
         return;
       }
       setState(() {
-        elapsedSec = duration.elapsed.inSeconds;
+        elapsed = duration.elapsed;
+        remaining = duration.remaining;
       });
     }, onDone: () {
       timer?.cancel();
