@@ -17,7 +17,10 @@ class Pomodoro extends StatefulWidget {
 }
 
 class _PomodoroState extends State<Pomodoro> {
-  static CountdownTimer timer;
+  static CountdownTimer workTimer;
+  static CountdownTimer shortBreakTimer;
+  static CountdownTimer longBreakTimer;
+
   Duration elapsed = Duration.zero;
   Duration remaining = Duration.zero;
 
@@ -35,7 +38,7 @@ class _PomodoroState extends State<Pomodoro> {
                     radius: 150.0,
                     lineWidth: 15.0,
                     percent: getCurrentPercentage(vm, elapsed.inSeconds / 60),
-                    center: Text(remaining.printDuration()),
+                    center: Text(getStateName(vm.state)),
                     progressColor: Theme.of(context).primaryColor,
                     circularStrokeCap: CircularStrokeCap.round,
                     animation: true,
@@ -48,6 +51,7 @@ class _PomodoroState extends State<Pomodoro> {
                             "Checkmarks: ${vm.checkmarks} of ${vm.totalCheckmarks}"),
                       ],
                     ),
+                    footer: Text(remaining.printDuration()),
                     startAngle: 0.0,
                     reverse: false,
                   ),
@@ -82,7 +86,9 @@ class _PomodoroState extends State<Pomodoro> {
                     label: Text("Reset"),
                     onPressed: () {
                       vm.setState(PomodoroState.none);
-                      timer?.cancel();
+
+                      stopTimers();
+
                       setState(() {
                         elapsed = Duration.zero;
                         remaining = Duration.zero;
@@ -96,6 +102,16 @@ class _PomodoroState extends State<Pomodoro> {
         });
   }
 
+  void stopTimers() {
+    workTimer?.cancel();
+    shortBreakTimer?.cancel();
+    longBreakTimer?.cancel();
+
+    workTimer = null;
+    shortBreakTimer = null;
+    longBreakTimer = null;
+  }
+
   double getCurrentPercentage(PomodoroViewModel vm, double current) {
     switch (vm.state) {
       case PomodoroState.none:
@@ -106,103 +122,117 @@ class _PomodoroState extends State<Pomodoro> {
         return (1 - ((100 * current) / vm.shortBreak) / 100).toDouble();
       case PomodoroState.longBreak:
         return (1 - ((100 * current) / vm.longBreak) / 100).toDouble();
+      default:
+        return 0.0;
     }
-    return 0.0;
   }
 
   void _startWork(PomodoroViewModel vm) {
-    timer?.cancel();
+    stopTimers();
+
     setState(() {
-      timer = CountdownTimer(
+      workTimer = CountdownTimer(
         Duration(minutes: appStore.state.settings.work),
         Duration(seconds: 1),
       );
       elapsed = Duration.zero;
-      remaining = Duration.zero;
+      remaining = Duration(minutes: appStore.state.settings.work) -
+          Duration(seconds: 1);
     });
 
-    timer.listen((duration) {
-      if (appStore.state.pomodoro.state == PomodoroState.none) {
-        timer?.cancel();
-        return;
-      }
-      setState(() {
-        elapsed = duration.elapsed;
-        remaining = duration.remaining;
-      });
-    }, onDone: () {
-      timer?.cancel();
-      if (appStore.state.pomodoro.state == PomodoroState.work) {
-        if (appStore.state.pomodoro.checkmarks <
-            appStore.state.settings.checkmarks) {
-          _startShortBreak(vm);
-        } else {
-          _startLongBreak(vm);
+    workTimer.listen(
+      (duration) {
+        if (appStore.state.pomodoro.state != PomodoroState.work) {
+          workTimer?.cancel();
+          return;
         }
-      }
-    });
+        setState(() {
+          elapsed = duration.elapsed;
+          remaining = duration.remaining;
+        });
+      },
+      // onDone: () {
+      //   workTimer?.cancel();
+      //   if (appStore.state.pomodoro.state == PomodoroState.work) {
+      //     if (appStore.state.pomodoro.checkmarks <
+      //         appStore.state.settings.checkmarks) {
+      //       _startShortBreak(vm);
+      //     } else {
+      //       _startLongBreak(vm);
+      //     }
+      //   }
+      // }
+    );
 
     vm.setState(PomodoroState.work);
   }
 
   void _startShortBreak(PomodoroViewModel vm) {
-    timer?.cancel();
+    stopTimers();
 
     setState(() {
-      timer = CountdownTimer(
+      shortBreakTimer = CountdownTimer(
         Duration(minutes: appStore.state.settings.shortBreak),
         Duration(seconds: 1),
       );
       elapsed = Duration.zero;
-      remaining = Duration.zero;
+      remaining = Duration(minutes: appStore.state.settings.shortBreak) -
+          Duration(seconds: 1);
     });
 
-    timer.listen((duration) {
-      if (appStore.state.pomodoro.state == PomodoroState.none) {
-        timer?.cancel();
-        return;
-      }
-      setState(() {
-        elapsed = duration.elapsed;
-        remaining = duration.remaining;
-      });
-    }, onDone: () {
-      timer?.cancel();
-      if (appStore.state.pomodoro.state == PomodoroState.shortBreak) {
-        _startWork(vm);
-      }
-    });
+    shortBreakTimer.listen(
+      (duration) {
+        if (appStore.state.pomodoro.state != PomodoroState.shortBreak) {
+          shortBreakTimer?.cancel();
+          return;
+        }
+        setState(() {
+          elapsed = duration.elapsed;
+          remaining = duration.remaining;
+        });
+      },
+      // onDone: () {
+      //   shortBreakTimer?.cancel();
+      //   if (appStore.state.pomodoro.state == PomodoroState.shortBreak) {
+      //     _startWork(vm);
+      //   }
+      // }
+    );
 
     vm.setState(PomodoroState.shortBreak);
   }
 
   void _startLongBreak(PomodoroViewModel vm) {
-    timer?.cancel();
+    stopTimers();
 
     setState(() {
-      timer = CountdownTimer(
+      longBreakTimer = CountdownTimer(
         Duration(minutes: appStore.state.settings.longBreak),
         Duration(seconds: 1),
       );
       elapsed = Duration.zero;
-      remaining = Duration.zero;
+      remaining = Duration(minutes: appStore.state.settings.longBreak) -
+          Duration(seconds: 1);
     });
 
-    timer.listen((duration) {
-      if (appStore.state.pomodoro.state == PomodoroState.none) {
-        timer?.cancel();
-        return;
-      }
-      setState(() {
-        elapsed = duration.elapsed;
-        remaining = duration.remaining;
-      });
-    }, onDone: () {
-      timer?.cancel();
-      if (appStore.state.pomodoro.state == PomodoroState.longBreak) {
-        _startWork(vm);
-      }
-    });
+    longBreakTimer.listen(
+      (duration) {
+        if (appStore.state.pomodoro.state != PomodoroState.longBreak) {
+          longBreakTimer?.cancel();
+          return;
+        }
+        setState(() {
+          elapsed = duration.elapsed;
+          remaining = duration.remaining;
+        });
+      },
+      // onDone: () {
+      //   longBreakTimer?.cancel();
+      //   if (appStore.state.pomodoro.state == PomodoroState.longBreak) {
+      //     _startWork(vm);
+      //   }
+      // }
+    );
 
     vm.setState(PomodoroState.longBreak);
   }
