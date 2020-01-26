@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -7,8 +5,8 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pomodoro_time/models/pomodoro.dart';
 import 'package:pomodoro_time/pomodoro_viewmodel.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
-import 'package:pomodoro_time/redux/middlewares/pomodoro_timer_middleware.dart';
 import 'package:pomodoro_time/redux/store.dart';
+import 'package:quiver/async.dart';
 
 class Pomodoro extends StatefulWidget {
   const Pomodoro({Key key}) : super(key: key);
@@ -18,21 +16,14 @@ class Pomodoro extends StatefulWidget {
 }
 
 class _PomodoroState extends State<Pomodoro> {
-  int elapsedSec;
+  static CountdownTimer timer;
+  int elapsedSec = 0;
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, PomodoroViewModel>(
         converter: (store) => PomodoroViewModel.create(store),
         builder: (context, vm) {
-          // PomodoroTimer().timer?.listen((duration) {
-          //   setState(() {
-          //     elapsedSec = duration.elapsed.inSeconds;
-          //   });
-          // });
-
-          print(elapsedSec);
-
           return Container(
             child: Center(
               child: Column(
@@ -41,8 +32,8 @@ class _PomodoroState extends State<Pomodoro> {
                   CircularPercentIndicator(
                     radius: 150.0,
                     lineWidth: 15.0,
-                    percent: 0.75,
-                    center: Text("75%"),
+                    percent: getCurrentPercentage(vm, elapsedSec / 60),
+                    center: Text("$elapsedSec s"),
                     progressColor: Theme.of(context).primaryColor,
                     circularStrokeCap: CircularStrokeCap.round,
                     animation: true,
@@ -55,7 +46,8 @@ class _PomodoroState extends State<Pomodoro> {
                             "Checkmarks: ${vm.checkmarks} of ${vm.totalCheckmarks}"),
                       ],
                     ),
-                    startAngle: 90.0,
+                    startAngle: 0.0,
+                    reverse: false,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -88,6 +80,10 @@ class _PomodoroState extends State<Pomodoro> {
                     label: Text("Reset"),
                     onPressed: () {
                       vm.setState(PomodoroState.none);
+                      timer?.cancel();
+                      setState(() {
+                        elapsedSec = 0;
+                      });
                     },
                   ),
                 ],
@@ -97,15 +93,108 @@ class _PomodoroState extends State<Pomodoro> {
         });
   }
 
+  double getCurrentPercentage(PomodoroViewModel vm, double current) {
+    switch (vm.state) {
+      case PomodoroState.none:
+        return 1.0;
+      case PomodoroState.work:
+        return (1 - ((100 * current) / vm.work) / 100).toDouble();
+      case PomodoroState.shortBreak:
+        return (1 - ((100 * current) / vm.shortBreak) / 100).toDouble();
+      case PomodoroState.longBreak:
+        return (1 - ((100 * current) / vm.longBreak) / 100).toDouble();
+    }
+    return 0.0;
+  }
+
   void _startWork(PomodoroViewModel vm) {
+    timer?.cancel();
+    setState(() {
+      timer = CountdownTimer(
+        Duration(minutes: appStore.state.settings.work),
+        Duration(seconds: 1),
+      );
+      elapsedSec = 0;
+    });
+
+    timer.listen((duration) {
+      if (appStore.state.pomodoro.state == PomodoroState.none) {
+        timer?.cancel();
+        return;
+      }
+      setState(() {
+        elapsedSec = duration.elapsed.inSeconds;
+      });
+    }, onDone: () {
+      timer?.cancel();
+      if (appStore.state.pomodoro.state == PomodoroState.work) {
+        if (appStore.state.pomodoro.checkmarks <
+            appStore.state.settings.checkmarks) {
+          _startShortBreak(vm);
+        } else {
+          _startLongBreak(vm);
+        }
+      }
+    });
+
     vm.setState(PomodoroState.work);
   }
 
   void _startShortBreak(PomodoroViewModel vm) {
+    timer?.cancel();
+
+    setState(() {
+      timer = CountdownTimer(
+        Duration(minutes: appStore.state.settings.shortBreak),
+        Duration(seconds: 1),
+      );
+      elapsedSec = 0;
+    });
+
+    timer.listen((duration) {
+      if (appStore.state.pomodoro.state == PomodoroState.none) {
+        timer?.cancel();
+        return;
+      }
+      setState(() {
+        elapsedSec = duration.elapsed.inSeconds;
+      });
+    }, onDone: () {
+      timer?.cancel();
+      if (appStore.state.pomodoro.state == PomodoroState.shortBreak) {
+        _startWork(vm);
+      }
+    });
+
     vm.setState(PomodoroState.shortBreak);
   }
 
   void _startLongBreak(PomodoroViewModel vm) {
+    timer?.cancel();
+
+    setState(() {
+      timer = CountdownTimer(
+        Duration(minutes: appStore.state.settings.longBreak),
+        Duration(seconds: 1),
+      );
+      elapsedSec = 0;
+    });
+
+    timer.listen((duration) {
+      if (appStore.state.pomodoro.state == PomodoroState.none) {
+        timer?.cancel();
+        return;
+      }
+      setState(() {
+        elapsedSec = duration.elapsed.inSeconds;
+      });
+    }, onDone: () {
+      timer?.cancel();
+      if (appStore.state.pomodoro.state == PomodoroState.longBreak) {
+        _startWork(vm);
+      }
+    });
+
     vm.setState(PomodoroState.longBreak);
   }
 }

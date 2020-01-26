@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
-import 'package:pomodoro_time/redux/middlewares/pomodoro_timer_middleware.dart';
 import 'package:pomodoro_time/redux/middlewares/settings_middleware.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_logging/redux_logging.dart';
@@ -13,7 +12,6 @@ List<Middleware<AppState>> createAppStateMiddleware() {
       ),
     loadSettings(),
     saveSettings(),
-    pomodoroTimer(),
   ];
 }
 
