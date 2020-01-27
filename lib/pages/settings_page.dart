@@ -19,9 +19,6 @@ class _SettingsPageState extends State<SettingsPage> {
   double _shortBreakSliderValue = Settings.default_short_break.toDouble();
   double _longBreakSliderValue = Settings.default_long_break.toDouble();
 
-  /// FIXME: remove unused field
-  int _checkmarksValue = Settings.default_checkmarks;
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, SettingsViewModel>(
@@ -32,14 +29,9 @@ class _SettingsPageState extends State<SettingsPage> {
             _workSliderValue = vm.work.toDouble();
             _shortBreakSliderValue = vm.shortBreak.toDouble();
             _longBreakSliderValue = vm.longBreak.toDouble();
-            _checkmarksValue = vm.checkmarks;
           });
         },
         builder: (context, vm) {
-          print(_workSliderValue.clamp(
-            Settings.min_work_length.toDouble(),
-            Settings.max_work_length.toDouble(),
-          ));
           return Scaffold(
             appBar: AppBar(
               title: Text("Settings"),
@@ -157,7 +149,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         onChanged: (value) {
                           if (value == vm.checkmarks) return;
 
-                          setState(() => _checkmarksValue = value);
                           vm.setCheckmarks(value.toInt());
                         },
                       ),
