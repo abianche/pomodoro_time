@@ -26,8 +26,9 @@ class HomePage extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("title"),
-                        content: Text("asd"),
+                        title: Text("Stop Pomodoro?"),
+                        content: Text(
+                            "To change the settings, the current Pomodoro time has to be stopped.Do you wish to continue?"),
                         actions: [
                           FlatButton(
                             child: Text(MaterialLocalizations.of(context)
@@ -52,8 +53,6 @@ class HomePage extends StatelessWidget {
                 }
 
                 appStore.dispatch(StopAction());
-
-                /// TODO: stop timer
                 Navigator.of(context).pushNamed(AppRoutes.settings);
               })
         ],
