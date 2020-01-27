@@ -1,3 +1,4 @@
+import 'package:audioplayers/audio_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -11,6 +12,7 @@ import 'package:quiver/async.dart';
 
 class Pomodoro extends StatefulWidget {
   const Pomodoro({Key key}) : super(key: key);
+  static AudioCache player = AudioCache(prefix: 'sounds/');
 
   @override
   _PomodoroState createState() => _PomodoroState();
@@ -140,29 +142,27 @@ class _PomodoroState extends State<Pomodoro> {
           Duration(seconds: 1);
     });
 
-    workTimer.listen(
-      (duration) {
-        if (appStore.state.pomodoro.state != PomodoroState.work) {
-          workTimer?.cancel();
-          return;
-        }
-        setState(() {
-          elapsed = duration.elapsed;
-          remaining = duration.remaining;
-        });
-      },
-      // onDone: () {
-      //   workTimer?.cancel();
-      //   if (appStore.state.pomodoro.state == PomodoroState.work) {
-      //     if (appStore.state.pomodoro.checkmarks <
-      //         appStore.state.settings.checkmarks) {
-      //       _startShortBreak(vm);
-      //     } else {
-      //       _startLongBreak(vm);
-      //     }
+    workTimer.listen((duration) {
+      if (appStore.state.pomodoro.state != PomodoroState.work) {
+        workTimer?.cancel();
+        return;
+      }
+      setState(() {
+        elapsed = duration.elapsed;
+        remaining = duration.remaining;
+      });
+    }, onDone: () {
+      // workTimer?.cancel();
+      // if (appStore.state.pomodoro.state == PomodoroState.work) {
+      //   if (appStore.state.pomodoro.checkmarks <
+      //       appStore.state.settings.checkmarks) {
+      //     _startShortBreak(vm);
+      //   } else {
+      //     _startLongBreak(vm);
       //   }
       // }
-    );
+      Pomodoro.player.play('tone1.mp3');
+    });
 
     vm.setState(PomodoroState.work);
   }
@@ -180,24 +180,22 @@ class _PomodoroState extends State<Pomodoro> {
           Duration(seconds: 1);
     });
 
-    shortBreakTimer.listen(
-      (duration) {
-        if (appStore.state.pomodoro.state != PomodoroState.shortBreak) {
-          shortBreakTimer?.cancel();
-          return;
-        }
-        setState(() {
-          elapsed = duration.elapsed;
-          remaining = duration.remaining;
-        });
-      },
-      // onDone: () {
-      //   shortBreakTimer?.cancel();
-      //   if (appStore.state.pomodoro.state == PomodoroState.shortBreak) {
-      //     _startWork(vm);
-      //   }
+    shortBreakTimer.listen((duration) {
+      if (appStore.state.pomodoro.state != PomodoroState.shortBreak) {
+        shortBreakTimer?.cancel();
+        return;
+      }
+      setState(() {
+        elapsed = duration.elapsed;
+        remaining = duration.remaining;
+      });
+    }, onDone: () {
+      // shortBreakTimer?.cancel();
+      // if (appStore.state.pomodoro.state == PomodoroState.shortBreak) {
+      //   _startWork(vm);
       // }
-    );
+      Pomodoro.player.play('tone2.mp3');
+    });
 
     vm.setState(PomodoroState.shortBreak);
   }
@@ -215,24 +213,22 @@ class _PomodoroState extends State<Pomodoro> {
           Duration(seconds: 1);
     });
 
-    longBreakTimer.listen(
-      (duration) {
-        if (appStore.state.pomodoro.state != PomodoroState.longBreak) {
-          longBreakTimer?.cancel();
-          return;
-        }
-        setState(() {
-          elapsed = duration.elapsed;
-          remaining = duration.remaining;
-        });
-      },
-      // onDone: () {
+    longBreakTimer.listen((duration) {
+      if (appStore.state.pomodoro.state != PomodoroState.longBreak) {
+        longBreakTimer?.cancel();
+        return;
+      }
+      setState(() {
+        elapsed = duration.elapsed;
+        remaining = duration.remaining;
+      });
+    }, onDone: () {
       //   longBreakTimer?.cancel();
       //   if (appStore.state.pomodoro.state == PomodoroState.longBreak) {
       //     _startWork(vm);
       //   }
-      // }
-    );
+      Pomodoro.player.play('tone3.mp3');
+    });
 
     vm.setState(PomodoroState.longBreak);
   }
