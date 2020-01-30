@@ -9,6 +9,8 @@ Settings settingsReducer(Settings state, action) {
       shortBreak: action.shortBreak ?? state.shortBreak,
       longBreak: action.longBreak ?? state.longBreak,
       checkmarks: action.checkmarks ?? state.checkmarks,
+      playSounds: action.playSounds ?? state.playSounds,
+      vibration: action.vibration ?? state.vibration,
     );
   }
 

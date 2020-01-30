@@ -8,21 +8,29 @@ class SettingsViewModel {
   final int shortBreak;
   final int longBreak;
   final int checkmarks;
+  final bool playSounds;
+  final bool vibration;
 
   final Function(int) setWorkTime;
   final Function(int) setShortBreakTime;
   final Function(int) setLongBreakTime;
   final Function(int) setCheckmarks;
+  final Function(bool) setPlaySounds;
+  final Function(bool) setVibration;
 
   SettingsViewModel({
     @required this.work,
     @required this.shortBreak,
     @required this.longBreak,
     @required this.checkmarks,
+    @required this.playSounds,
+    @required this.vibration,
     @required this.setWorkTime,
     @required this.setShortBreakTime,
     @required this.setLongBreakTime,
     @required this.setCheckmarks,
+    @required this.setPlaySounds,
+    @required this.setVibration,
   });
 
   factory SettingsViewModel.create(Store<AppState> store) {
@@ -32,6 +40,8 @@ class SettingsViewModel {
       shortBreak: store.state.settings.shortBreak,
       longBreak: store.state.settings.longBreak,
       checkmarks: store.state.settings.checkmarks,
+      playSounds: store.state.settings.playSounds,
+      vibration: store.state.settings.vibration,
       setWorkTime: (int time) => store.dispatch(
         SetSettingsAction(work: time),
       ),
@@ -44,6 +54,12 @@ class SettingsViewModel {
       setCheckmarks: (int value) => store.dispatch(
         SetSettingsAction(checkmarks: value),
       ),
+      setPlaySounds: (bool enabled) => store.dispatch(
+        SetSettingsAction(playSounds: enabled),
+      ),
+      setVibration: (bool enabled) => store.dispatch(
+        SetSettingsAction(vibration: enabled),
+      ),
     );
   }
 
@@ -55,12 +71,16 @@ class SettingsViewModel {
           work == other.work &&
           shortBreak == other.shortBreak &&
           longBreak == other.longBreak &&
-          checkmarks == other.checkmarks;
+          checkmarks == other.checkmarks &&
+          playSounds == other.playSounds &&
+          vibration == other.vibration;
 
   @override
   int get hashCode =>
       work.hashCode ^
       shortBreak.hashCode ^
       longBreak.hashCode ^
-      checkmarks.hashCode;
+      checkmarks.hashCode ^
+      playSounds.hashCode ^
+      vibration.hashCode;
 }

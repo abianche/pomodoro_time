@@ -22,6 +22,12 @@ Middleware<AppState> saveSettings() {
       if (action.checkmarks != null) {
         await preferences.setInt(setting_checkmarks, action.checkmarks);
       }
+      if (action.playSounds != null) {
+        await preferences.setBool(setting_play_sounds, action.playSounds);
+      }
+      if (action.vibration != null) {
+        await preferences.setBool(setting_vibration, action.vibration);
+      }
     }
 
     next(action);
@@ -40,6 +46,8 @@ Middleware<AppState> loadSettings() {
           preferences.getInt(setting_long_break) ?? Settings.default_long_break;
       int checkmarks =
           preferences.getInt(setting_checkmarks) ?? Settings.default_checkmarks;
+      bool playSounds = preferences.getBool(setting_play_sounds) ?? true;
+      bool vibration = preferences.getBool(setting_vibration) ?? true;
 
       store.dispatch(
         SetSettingsAction(
@@ -47,6 +55,8 @@ Middleware<AppState> loadSettings() {
           shortBreak: shortBreak,
           longBreak: longBreak,
           checkmarks: checkmarks,
+          playSounds: playSounds,
+          vibration: vibration,
         ),
       );
     }

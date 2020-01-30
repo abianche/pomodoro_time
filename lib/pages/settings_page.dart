@@ -202,6 +202,20 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ],
                   ),
+                  SwitchListTile.adaptive(
+                    value: vm.playSounds,
+                    onChanged: (bool enabled) {
+                      vm.setPlaySounds(enabled);
+                    },
+                    title: Text("Sounds"),
+                  ),
+                  SwitchListTile.adaptive(
+                    value: vm.vibration,
+                    onChanged: (bool enabled) {
+                      vm.setVibration(enabled);
+                    },
+                    title: Text("Vibration"),
+                  ),
                 ],
               ),
             ),

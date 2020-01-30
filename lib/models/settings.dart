@@ -18,30 +18,41 @@ class Settings {
   final int longBreak;
   final int checkmarks;
 
+  final bool playSounds;
+  final bool vibration;
+
   Settings({
     @required this.work,
     @required this.shortBreak,
     @required this.longBreak,
     @required this.checkmarks,
+    @required this.playSounds,
+    @required this.vibration,
   });
 
   Settings.initialState()
       : work = default_work,
         shortBreak = default_short_break,
         longBreak = default_long_break,
-        checkmarks = default_checkmarks;
+        checkmarks = default_checkmarks,
+        playSounds = true,
+        vibration = true;
 
   Settings copyWith({
     int work,
     int shortBreak,
     int longBreak,
     int checkmarks,
+    bool playSounds,
+    bool vibration,
   }) =>
       Settings(
         work: work ?? this.work,
         shortBreak: shortBreak ?? this.shortBreak,
         longBreak: longBreak ?? this.longBreak,
         checkmarks: checkmarks ?? this.checkmarks,
+        playSounds: playSounds ?? this.playSounds,
+        vibration: vibration ?? this.vibration,
       );
 
   @override
@@ -49,7 +60,9 @@ class Settings {
       work.hashCode ^
       shortBreak.hashCode ^
       longBreak.hashCode ^
-      checkmarks.hashCode;
+      checkmarks.hashCode ^
+      playSounds.hashCode ^
+      vibration.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -59,5 +72,7 @@ class Settings {
           work == other.work &&
           shortBreak == other.shortBreak &&
           longBreak == other.longBreak &&
-          checkmarks == other.checkmarks;
+          checkmarks == other.checkmarks &&
+          playSounds == other.playSounds &&
+          vibration == other.vibration;
 }
