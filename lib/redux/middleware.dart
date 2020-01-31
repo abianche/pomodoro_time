@@ -21,8 +21,8 @@ String customLineFormatter(
   DateTime timestamp,
 ) {
   return "\n" +
-      "  Action     ${action.runtimeType.toString()},\n" +
-      "  Payload    ${action.toString()},\n" +
+      "  Action     ${action.runtimeType.toString()}\n" +
+      "  Payload    ${action.toString()}\n" +
       "  Timestamp  ${DateTime.now()}\n" +
       "";
 }

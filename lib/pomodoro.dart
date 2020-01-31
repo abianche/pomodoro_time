@@ -41,7 +41,6 @@ class _PomodoroState extends State<Pomodoro> {
                     lineWidth: 15.0,
                     percent: getCurrentPercentage(vm, elapsed.inSeconds / 60),
                     center: Text(getStateName(vm.state)),
-                    progressColor: Theme.of(context).primaryColor,
                     circularStrokeCap: CircularStrokeCap.round,
                     animation: true,
                     animateFromLastPercent: true,

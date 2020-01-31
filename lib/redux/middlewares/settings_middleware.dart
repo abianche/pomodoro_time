@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:pomodoro_time/constants.dart';
 import 'package:pomodoro_time/models/settings.dart';
 import 'package:pomodoro_time/redux/actions/settings_actions.dart';
@@ -28,8 +29,8 @@ Middleware<AppState> saveSettings() {
       if (action.vibration != null) {
         await preferences.setBool(setting_vibration, action.vibration);
       }
-      if (action.darkTheme != null) {
-        await preferences.setBool(setting_dark_theme, action.darkTheme);
+      if (action.themeMode != null) {
+        await preferences.setInt(setting_dark_theme, action.themeMode.index);
       }
     }
 
@@ -51,7 +52,8 @@ Middleware<AppState> loadSettings() {
           preferences.getInt(setting_checkmarks) ?? Settings.default_checkmarks;
       bool playSounds = preferences.getBool(setting_play_sounds) ?? true;
       bool vibration = preferences.getBool(setting_vibration) ?? true;
-      bool darkTheme = preferences.getBool(setting_dark_theme) ?? false;
+      ThemeMode themeMode = ThemeMode.values
+          .elementAt(preferences.getInt(setting_dark_theme) ?? 0);
 
       store.dispatch(
         SetSettingsAction(
@@ -61,7 +63,8 @@ Middleware<AppState> loadSettings() {
           checkmarks: checkmarks,
           playSounds: playSounds,
           vibration: vibration,
-          darkTheme: darkTheme,
+          themeMode: themeMode,
+          isLoading: false,
         ),
       );
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:pomodoro_time/redux/actions/settings_actions.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:redux/redux.dart';
@@ -10,7 +11,8 @@ class SettingsViewModel {
   final int checkmarks;
   final bool playSounds;
   final bool vibration;
-  final bool darkTheme;
+  final ThemeMode themeMode;
+  final bool isLoading;
 
   final Function(int) setWorkTime;
   final Function(int) setShortBreakTime;
@@ -18,7 +20,7 @@ class SettingsViewModel {
   final Function(int) setCheckmarks;
   final Function(bool) setPlaySounds;
   final Function(bool) setVibration;
-  final Function(bool) setDarkTheme;
+  final Function(ThemeMode) setThemeMode;
 
   SettingsViewModel({
     @required this.work,
@@ -27,14 +29,15 @@ class SettingsViewModel {
     @required this.checkmarks,
     @required this.playSounds,
     @required this.vibration,
-    @required this.darkTheme,
+    @required this.themeMode,
+    @required this.isLoading,
     @required this.setWorkTime,
     @required this.setShortBreakTime,
     @required this.setLongBreakTime,
     @required this.setCheckmarks,
     @required this.setPlaySounds,
     @required this.setVibration,
-    @required this.setDarkTheme,
+    @required this.setThemeMode,
   });
 
   factory SettingsViewModel.create(Store<AppState> store) {
@@ -46,7 +49,8 @@ class SettingsViewModel {
       checkmarks: store.state.settings.checkmarks,
       playSounds: store.state.settings.playSounds,
       vibration: store.state.settings.vibration,
-      darkTheme: store.state.settings.darkTheme,
+      themeMode: store.state.settings.themeMode,
+      isLoading: store.state.settings.isLoading,
       setWorkTime: (int time) => store.dispatch(
         SetSettingsAction(work: time),
       ),
@@ -65,8 +69,8 @@ class SettingsViewModel {
       setVibration: (bool enabled) => store.dispatch(
         SetSettingsAction(vibration: enabled),
       ),
-      setDarkTheme: (bool enabled) => store.dispatch(
-        SetSettingsAction(darkTheme: enabled),
+      setThemeMode: (ThemeMode themeMode) => store.dispatch(
+        SetSettingsAction(themeMode: themeMode),
       ),
     );
   }
@@ -82,7 +86,8 @@ class SettingsViewModel {
           checkmarks == other.checkmarks &&
           playSounds == other.playSounds &&
           vibration == other.vibration &&
-          darkTheme == other.darkTheme;
+          themeMode == other.themeMode &&
+          isLoading == other.isLoading;
 
   @override
   int get hashCode =>
@@ -92,5 +97,6 @@ class SettingsViewModel {
       checkmarks.hashCode ^
       playSounds.hashCode ^
       vibration.hashCode ^
-      darkTheme.hashCode;
+      themeMode.hashCode ^
+      isLoading.hashCode;
 }

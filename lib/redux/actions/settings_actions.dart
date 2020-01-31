@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class SetSettingsAction {
   final int work;
   final int shortBreak;
@@ -5,7 +7,9 @@ class SetSettingsAction {
   final int checkmarks;
   final bool playSounds;
   final bool vibration;
-  final bool darkTheme;
+  final ThemeMode themeMode;
+
+  final bool isLoading;
 
   SetSettingsAction({
     this.work,
@@ -14,12 +18,22 @@ class SetSettingsAction {
     this.checkmarks,
     this.playSounds,
     this.vibration,
-    this.darkTheme,
+    this.themeMode,
+    this.isLoading,
   });
 
   @override
-  String toString() =>
-      "work: $work, shortBreak : $shortBreak, longBreak: $longBreak, checkmarks: $checkmarks, playSounds: $playSounds, vibration: $vibration, darkTheme: $darkTheme";
+  String toString() => """
+
+      work        $work
+      shortBreak  $shortBreak
+      longBreak   $longBreak
+      checkmarks  $checkmarks
+      playSounds  $playSounds
+      vibration   $vibration
+      themeMode   $themeMode
+      isLoading   $isLoading
+      """;
 }
 
 class ResetSettingsAction {}

@@ -20,7 +20,9 @@ class Settings {
 
   final bool playSounds;
   final bool vibration;
-  final bool darkTheme;
+  final ThemeMode themeMode;
+
+  final bool isLoading;
 
   Settings({
     @required this.work,
@@ -29,7 +31,8 @@ class Settings {
     @required this.checkmarks,
     @required this.playSounds,
     @required this.vibration,
-    @required this.darkTheme,
+    @required this.themeMode,
+    @required this.isLoading,
   });
 
   Settings.initialState()
@@ -39,7 +42,8 @@ class Settings {
         checkmarks = default_checkmarks,
         playSounds = true,
         vibration = true,
-        darkTheme = false;
+        themeMode = ThemeMode.system,
+        isLoading = false;
 
   Settings copyWith({
     int work,
@@ -48,7 +52,8 @@ class Settings {
     int checkmarks,
     bool playSounds,
     bool vibration,
-    bool darkTheme,
+    ThemeMode themeMode,
+    bool isLoading,
   }) =>
       Settings(
         work: work ?? this.work,
@@ -57,7 +62,8 @@ class Settings {
         checkmarks: checkmarks ?? this.checkmarks,
         playSounds: playSounds ?? this.playSounds,
         vibration: vibration ?? this.vibration,
-        darkTheme: darkTheme ?? this.darkTheme,
+        themeMode: themeMode ?? this.themeMode,
+        isLoading: isLoading ?? this.isLoading,
       );
 
   @override
@@ -68,7 +74,8 @@ class Settings {
       checkmarks.hashCode ^
       playSounds.hashCode ^
       vibration.hashCode ^
-      darkTheme.hashCode;
+      themeMode.hashCode ^
+      isLoading.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -81,5 +88,6 @@ class Settings {
           checkmarks == other.checkmarks &&
           playSounds == other.playSounds &&
           vibration == other.vibration &&
-          darkTheme == other.darkTheme;
+          themeMode == other.themeMode &&
+          isLoading == other.isLoading;
 }
