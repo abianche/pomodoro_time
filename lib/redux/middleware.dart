@@ -7,7 +7,7 @@ import 'package:redux_logging/redux_logging.dart';
 List<Middleware<AppState>> createAppStateMiddleware() {
   return [
     if (kDebugMode)
-      LoggingMiddleware.printer(
+      LoggingMiddleware<dynamic>.printer(
         formatter: customLineFormatter,
       ),
     loadSettings(),

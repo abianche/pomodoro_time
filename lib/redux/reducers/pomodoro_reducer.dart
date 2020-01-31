@@ -1,7 +1,7 @@
 import 'package:pomodoro_time/models/pomodoro.dart';
 import 'package:pomodoro_time/redux/actions/pomodoro_actions.dart';
 
-Pomodoro pomodoroReducer(Pomodoro state, action) {
+Pomodoro pomodoroReducer(Pomodoro state, dynamic action) {
   if (action is StartWorkingAction) {
     return state.copyWith(state: PomodoroState.work);
   }

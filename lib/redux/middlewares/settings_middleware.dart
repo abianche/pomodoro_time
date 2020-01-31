@@ -7,7 +7,7 @@ import 'package:redux/redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Middleware<AppState> saveSettings() {
-  return (Store<AppState> store, action, NextDispatcher next) async {
+  return (Store<AppState> store, dynamic action, NextDispatcher next) async {
     if (action is SetSettingsAction) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
 
@@ -39,7 +39,7 @@ Middleware<AppState> saveSettings() {
 }
 
 Middleware<AppState> loadSettings() {
-  return (Store<AppState> store, action, NextDispatcher next) async {
+  return (Store<AppState> store, dynamic action, NextDispatcher next) async {
     if (action is LoadSettingsAction) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
 

@@ -1,7 +1,7 @@
 import 'package:pomodoro_time/models/settings.dart';
 import 'package:pomodoro_time/redux/actions/settings_actions.dart';
 
-Settings settingsReducer(Settings state, action) {
+Settings settingsReducer(Settings state, dynamic action) {
   if (action is SetSettingsAction) {
     // copy only if specified
     return state.copyWith(

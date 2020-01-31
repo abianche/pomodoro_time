@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
               icon: Icon(Icons.settings),
               onPressed: () async {
                 if (appStore.state.pomodoro.state == PomodoroState.none) {
-                  Navigator.of(context).pushNamed(AppRoutes.settings);
+                  await Navigator.of(context).pushNamed(AppRoutes.settings);
                   return;
                 }
 
@@ -53,7 +53,7 @@ class HomePage extends StatelessWidget {
                 }
 
                 appStore.dispatch(StopAction());
-                Navigator.of(context).pushNamed(AppRoutes.settings);
+                await Navigator.of(context).pushNamed(AppRoutes.settings);
               })
         ],
       ),

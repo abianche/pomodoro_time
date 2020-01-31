@@ -10,11 +10,11 @@ class AppRoutes {
 Route<dynamic> buildOnGenerateRuoute(RouteSettings settings) {
   switch (settings.name) {
     case AppRoutes.home:
-      return MaterialPageRoute(builder: (_) => HomePage());
+      return MaterialPageRoute<void>(builder: (_) => HomePage());
     case AppRoutes.settings:
-      return MaterialPageRoute(builder: (_) => SettingsPage());
+      return MaterialPageRoute<void>(builder: (_) => SettingsPage());
     default:
-      return MaterialPageRoute(
+      return MaterialPageRoute<void>(
         builder: (_) => Scaffold(
           body: Center(
             child: Text('No route defined for ${settings.name}'),
