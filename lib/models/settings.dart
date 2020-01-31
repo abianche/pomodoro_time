@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+@immutable
 class Settings {
   static const int default_work = 25;
   static const int default_short_break = 5;

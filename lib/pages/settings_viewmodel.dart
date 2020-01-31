@@ -4,6 +4,7 @@ import 'package:pomodoro_time/redux/actions/settings_actions.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:redux/redux.dart';
 
+@immutable
 class SettingsViewModel {
   final int work;
   final int shortBreak;

@@ -18,6 +18,7 @@ String getStateName(PomodoroState state) {
   }
 }
 
+@immutable
 class Pomodoro {
   final PomodoroState state;
   final int checkmarks;

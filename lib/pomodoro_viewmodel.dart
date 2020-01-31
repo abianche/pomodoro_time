@@ -4,6 +4,7 @@ import 'package:pomodoro_time/redux/actions/pomodoro_actions.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:redux/redux.dart';
 
+@immutable
 class PomodoroViewModel {
   final int work;
   final int shortBreak;
