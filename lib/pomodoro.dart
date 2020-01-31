@@ -160,7 +160,9 @@ class _PomodoroState extends State<Pomodoro> {
       //     _startLongBreak(vm);
       //   }
       // }
-      Pomodoro.player.play('tone1.mp3');
+      if (appStore.state.pomodoro.state != PomodoroState.none) {
+        Pomodoro.player.play('tone1.mp3');
+      }
     });
 
     vm.setState(PomodoroState.work);
@@ -193,7 +195,9 @@ class _PomodoroState extends State<Pomodoro> {
       // if (appStore.state.pomodoro.state == PomodoroState.shortBreak) {
       //   _startWork(vm);
       // }
-      Pomodoro.player.play('tone2.mp3');
+      if (appStore.state.pomodoro.state != PomodoroState.none) {
+        Pomodoro.player.play('tone2.mp3');
+      }
     });
 
     vm.setState(PomodoroState.shortBreak);
@@ -226,7 +230,9 @@ class _PomodoroState extends State<Pomodoro> {
       //   if (appStore.state.pomodoro.state == PomodoroState.longBreak) {
       //     _startWork(vm);
       //   }
-      Pomodoro.player.play('tone3.mp3');
+      if (appStore.state.pomodoro.state != PomodoroState.none) {
+        Pomodoro.player.play('tone3.mp3');
+      }
     });
 
     vm.setState(PomodoroState.longBreak);
