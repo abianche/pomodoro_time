@@ -1,8 +1,9 @@
 name: Flutter CI
 
-push:
-  branches:
-    - master
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build-and-test:
