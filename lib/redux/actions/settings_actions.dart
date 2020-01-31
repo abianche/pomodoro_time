@@ -5,6 +5,7 @@ class SetSettingsAction {
   final int checkmarks;
   final bool playSounds;
   final bool vibration;
+  final bool darkTheme;
 
   SetSettingsAction({
     this.work,
@@ -13,11 +14,12 @@ class SetSettingsAction {
     this.checkmarks,
     this.playSounds,
     this.vibration,
+    this.darkTheme,
   });
 
   @override
   String toString() =>
-      "work: $work, shortBreak : $shortBreak, longBreak: $longBreak, checkmarks: $checkmarks, playSounds: $playSounds, vibration: $vibration";
+      "work: $work, shortBreak : $shortBreak, longBreak: $longBreak, checkmarks: $checkmarks, playSounds: $playSounds, vibration: $vibration, darkTheme: $darkTheme";
 }
 
 class ResetSettingsAction {}

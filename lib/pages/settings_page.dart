@@ -216,6 +216,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                     title: Text("Vibration"),
                   ),
+                  SwitchListTile.adaptive(
+                    value: vm.darkTheme,
+                    onChanged: (bool enabled) {
+                      vm.setDarkTheme(enabled);
+                    },
+                    title: Text("Dark theme"),
+                  ),
                 ],
               ),
             ),

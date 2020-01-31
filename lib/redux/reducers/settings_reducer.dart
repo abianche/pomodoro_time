@@ -11,6 +11,7 @@ Settings settingsReducer(Settings state, action) {
       checkmarks: action.checkmarks ?? state.checkmarks,
       playSounds: action.playSounds ?? state.playSounds,
       vibration: action.vibration ?? state.vibration,
+      darkTheme: action.darkTheme ?? state.darkTheme,
     );
   }
 

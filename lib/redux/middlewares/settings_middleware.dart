@@ -28,6 +28,9 @@ Middleware<AppState> saveSettings() {
       if (action.vibration != null) {
         await preferences.setBool(setting_vibration, action.vibration);
       }
+      if (action.darkTheme != null) {
+        await preferences.setBool(setting_dark_theme, action.darkTheme);
+      }
     }
 
     next(action);
@@ -48,6 +51,7 @@ Middleware<AppState> loadSettings() {
           preferences.getInt(setting_checkmarks) ?? Settings.default_checkmarks;
       bool playSounds = preferences.getBool(setting_play_sounds) ?? true;
       bool vibration = preferences.getBool(setting_vibration) ?? true;
+      bool darkTheme = preferences.getBool(setting_dark_theme) ?? false;
 
       store.dispatch(
         SetSettingsAction(
@@ -57,6 +61,7 @@ Middleware<AppState> loadSettings() {
           checkmarks: checkmarks,
           playSounds: playSounds,
           vibration: vibration,
+          darkTheme: darkTheme,
         ),
       );
     }

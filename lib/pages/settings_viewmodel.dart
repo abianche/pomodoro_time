@@ -10,6 +10,7 @@ class SettingsViewModel {
   final int checkmarks;
   final bool playSounds;
   final bool vibration;
+  final bool darkTheme;
 
   final Function(int) setWorkTime;
   final Function(int) setShortBreakTime;
@@ -17,6 +18,7 @@ class SettingsViewModel {
   final Function(int) setCheckmarks;
   final Function(bool) setPlaySounds;
   final Function(bool) setVibration;
+  final Function(bool) setDarkTheme;
 
   SettingsViewModel({
     @required this.work,
@@ -25,12 +27,14 @@ class SettingsViewModel {
     @required this.checkmarks,
     @required this.playSounds,
     @required this.vibration,
+    @required this.darkTheme,
     @required this.setWorkTime,
     @required this.setShortBreakTime,
     @required this.setLongBreakTime,
     @required this.setCheckmarks,
     @required this.setPlaySounds,
     @required this.setVibration,
+    @required this.setDarkTheme,
   });
 
   factory SettingsViewModel.create(Store<AppState> store) {
@@ -42,6 +46,7 @@ class SettingsViewModel {
       checkmarks: store.state.settings.checkmarks,
       playSounds: store.state.settings.playSounds,
       vibration: store.state.settings.vibration,
+      darkTheme: store.state.settings.darkTheme,
       setWorkTime: (int time) => store.dispatch(
         SetSettingsAction(work: time),
       ),
@@ -60,6 +65,9 @@ class SettingsViewModel {
       setVibration: (bool enabled) => store.dispatch(
         SetSettingsAction(vibration: enabled),
       ),
+      setDarkTheme: (bool enabled) => store.dispatch(
+        SetSettingsAction(darkTheme: enabled),
+      ),
     );
   }
 
@@ -73,7 +81,8 @@ class SettingsViewModel {
           longBreak == other.longBreak &&
           checkmarks == other.checkmarks &&
           playSounds == other.playSounds &&
-          vibration == other.vibration;
+          vibration == other.vibration &&
+          darkTheme == other.darkTheme;
 
   @override
   int get hashCode =>
@@ -82,5 +91,6 @@ class SettingsViewModel {
       longBreak.hashCode ^
       checkmarks.hashCode ^
       playSounds.hashCode ^
-      vibration.hashCode;
+      vibration.hashCode ^
+      darkTheme.hashCode;
 }
