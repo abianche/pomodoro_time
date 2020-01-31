@@ -36,6 +36,7 @@ dependencies:
   quiver: 2.0.5
 
   audioplayers: ^0.14.0
+  vibration: 1.2.2
 
 dev_dependencies:
   flutter_test:

@@ -9,6 +9,7 @@ import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:pomodoro_time/redux/store.dart';
 import 'package:pomodoro_time/extensions.dart';
 import 'package:quiver/async.dart';
+import 'package:vibration/vibration.dart';
 
 class Pomodoro extends StatefulWidget {
   const Pomodoro({Key key}) : super(key: key);
@@ -161,7 +162,12 @@ class _PomodoroState extends State<Pomodoro> {
       //   }
       // }
       if (appStore.state.pomodoro.state != PomodoroState.none) {
-        Pomodoro.player.play('tone1.mp3');
+        if (appStore.state.settings.playSounds) {
+          Pomodoro.player.play('tone1.mp3');
+        }
+        if (appStore.state.settings.vibration) {
+          Vibration.vibrate(pattern: [50, 200, 50, 200]);
+        }
       }
     });
 
@@ -196,7 +202,12 @@ class _PomodoroState extends State<Pomodoro> {
       //   _startWork(vm);
       // }
       if (appStore.state.pomodoro.state != PomodoroState.none) {
-        Pomodoro.player.play('tone2.mp3');
+        if (appStore.state.settings.playSounds) {
+          Pomodoro.player.play('tone2.mp3');
+        }
+        if (appStore.state.settings.vibration) {
+          Vibration.vibrate(pattern: [50, 200, 50, 200]);
+        }
       }
     });
 
@@ -231,7 +242,12 @@ class _PomodoroState extends State<Pomodoro> {
       //     _startWork(vm);
       //   }
       if (appStore.state.pomodoro.state != PomodoroState.none) {
-        Pomodoro.player.play('tone3.mp3');
+        if (appStore.state.settings.playSounds) {
+          Pomodoro.player.play('tone3.mp3');
+        }
+        if (appStore.state.settings.vibration) {
+          Vibration.vibrate();
+        }
       }
     });
 
