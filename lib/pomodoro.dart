@@ -1,4 +1,5 @@
 import 'package:audioplayers/audio_cache.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -33,72 +34,107 @@ class _PomodoroState extends State<Pomodoro> {
         converter: (store) => PomodoroViewModel.create(store),
         builder: (context, vm) {
           return Container(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircularPercentIndicator(
-                    radius: 150.0,
-                    lineWidth: 15.0,
-                    percent: getCurrentPercentage(vm, elapsed.inSeconds / 60),
-                    center: Text(getStateName(vm.state)),
-                    circularStrokeCap: CircularStrokeCap.round,
-                    animation: true,
-                    animateFromLastPercent: true,
-                    header: Column(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 50.0),
+                CircularPercentIndicator(
+                  radius: MediaQuery.of(context).size.height / 2.5,
+                  lineWidth: 30.0,
+                  percent: getCurrentPercentage(vm, elapsed.inSeconds / 60),
+                  center: SizedBox(
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                            "State: ${vm.state.toString().split('.').last.toUpperCase()}"),
-                        Text(
-                            "Checkmarks: ${vm.checkmarks} of ${vm.totalCheckmarks}"),
+                        AutoSizeText(
+                          getStateName(vm.state),
+                          maxLines: 1,
+                          maxFontSize: 32.0,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 32.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        AutoSizeText(
+                          remaining.printDuration(),
+                          maxLines: 1,
+                          maxFontSize: 64.0,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 64.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
-                    footer: Text(remaining.printDuration()),
-                    startAngle: 0.0,
-                    reverse: false,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  circularStrokeCap: CircularStrokeCap.round,
+                  animation: true,
+                  animateFromLastPercent: true,
+                  // Column(
+                  //   children: <Widget>[
+                  //     Text(
+                  //         "State: ${vm.state.toString().split('.').last.toUpperCase()}"),
+                  //     Text(
+                  //         "Checkmarks: ${vm.checkmarks} of ${vm.totalCheckmarks}"),
+                  //   ],
+                  // ),
+                  startAngle: 0.0,
+                  reverse: false,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      FlatButton.icon(
-                        icon: Icon(Icons.play_arrow),
-                        label: Text(vm.work.toString()),
+                      IconButton(
+                        icon: Icon(
+                          Icons.play_arrow,
+                          size: 48.0,
+                        ),
                         onPressed: vm.state != PomodoroState.work
                             ? () => _startWork(vm)
                             : null,
                       ),
-                      FlatButton.icon(
-                        icon: Icon(Icons.pause_circle_outline),
-                        label: Text(vm.shortBreak.toString()),
+                      IconButton(
+                        icon: Icon(
+                          Icons.pause_circle_outline,
+                          size: 48.0,
+                        ),
                         onPressed: vm.state != PomodoroState.shortBreak
                             ? () => _startShortBreak(vm)
                             : null,
                       ),
-                      FlatButton.icon(
-                        icon: Icon(Icons.pause_circle_filled),
-                        label: Text(vm.longBreak.toString()),
+                      IconButton(
+                        icon: Icon(
+                          Icons.pause_circle_filled,
+                          size: 48.0,
+                        ),
                         onPressed: vm.state != PomodoroState.longBreak
                             ? () => _startLongBreak(vm)
                             : null,
                       ),
                     ],
                   ),
-                  FlatButton.icon(
-                    icon: Icon(Icons.restore),
-                    label: Text("Reset"),
-                    onPressed: () {
-                      vm.setState(PomodoroState.none);
+                ),
+                SizedBox(height: 18.0),
+                FlatButton.icon(
+                  icon: Icon(Icons.restore),
+                  label: Text("Reset"),
+                  onPressed: () {
+                    vm.setState(PomodoroState.none);
 
-                      stopTimers();
+                    stopTimers();
 
-                      setState(() {
-                        elapsed = Duration.zero;
-                        remaining = Duration.zero;
-                      });
-                    },
-                  ),
-                ],
-              ),
+                    setState(() {
+                      elapsed = Duration.zero;
+                      remaining = Duration.zero;
+                    });
+                  },
+                ),
+              ],
             ),
           );
         });
