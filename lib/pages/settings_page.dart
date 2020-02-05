@@ -4,7 +4,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:pomodoro_time/models/settings.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:pomodoro_time/pages/settings_viewmodel.dart';
-import 'package:pomodoro_time/version_tile.dart';
+import 'package:pomodoro_time/widgets/version_tile.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({
