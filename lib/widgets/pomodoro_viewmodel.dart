@@ -11,7 +11,7 @@ class PomodoroViewModel {
   final int longBreak;
   final int checkmarks;
   final int totalCheckmarks;
-  final PomodoroState state;
+  final Pomodoro pomodoro;
 
   final Function(PomodoroState) setState;
 
@@ -19,7 +19,7 @@ class PomodoroViewModel {
     @required this.work,
     @required this.shortBreak,
     @required this.longBreak,
-    @required this.state,
+    @required this.pomodoro,
     @required this.checkmarks,
     @required this.totalCheckmarks,
     @required this.setState,
@@ -31,7 +31,7 @@ class PomodoroViewModel {
       work: store.state.settings.work,
       shortBreak: store.state.settings.shortBreak,
       longBreak: store.state.settings.longBreak,
-      state: store.state.pomodoro.state,
+      pomodoro: store.state.pomodoro,
       checkmarks: store.state.pomodoro.checkmarks,
       totalCheckmarks: store.state.settings.checkmarks,
       setState: (PomodoroState state) {
@@ -48,6 +48,9 @@ class PomodoroViewModel {
           case PomodoroState.longBreak:
             store.dispatch(StartLongBreakAction());
             break;
+          case PomodoroState.pause:
+            store.dispatch(PauseAction());
+            break;
         }
       },
     );
@@ -63,14 +66,14 @@ class PomodoroViewModel {
           longBreak == other.longBreak &&
           checkmarks == other.checkmarks &&
           totalCheckmarks == other.totalCheckmarks &&
-          state == other.state;
+          pomodoro == other.pomodoro;
 
   @override
   int get hashCode =>
       work.hashCode ^
       shortBreak.hashCode ^
       longBreak.hashCode ^
-      state.hashCode ^
+      pomodoro.hashCode ^
       totalCheckmarks.hashCode ^
       checkmarks.hashCode;
 }

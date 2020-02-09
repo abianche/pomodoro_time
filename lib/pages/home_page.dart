@@ -4,6 +4,7 @@ import 'package:pomodoro_time/widgets/pomodoro.dart';
 import 'package:pomodoro_time/redux/actions/pomodoro_actions.dart';
 import 'package:pomodoro_time/redux/store.dart';
 import 'package:pomodoro_time/routes.dart';
+import 'package:timer_builder/timer_builder.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key key}) : super(key: key);
@@ -58,7 +59,10 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Pomodoro(),
+        child: TimerBuilder.periodic(
+          Duration(seconds: 1),
+          builder: (context) => Pomodoro(),
+        ),
       ),
     );
   }
