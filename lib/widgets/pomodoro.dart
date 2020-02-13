@@ -53,7 +53,7 @@ class _PomodoroState extends State<Pomodoro> {
     return StoreConnector<AppState, PomodoroViewModel>(
         converter: (store) => PomodoroViewModel.create(store),
         builder: (context, vm) {
-          PomodoroState next;
+          PomodoroState next = PomodoroState.work;
           if (vm.pomodoro.isWorking() && vm.checkmarks < vm.totalCheckmarks) {
             next = PomodoroState.shortBreak;
           }
@@ -67,6 +67,7 @@ class _PomodoroState extends State<Pomodoro> {
           if (stopwatch.elapsed >= currentTime(vm)) {
             stopwatch.stop();
             stopwatch.reset();
+
             vm.setState(next);
           }
 
@@ -122,10 +123,15 @@ class _PomodoroState extends State<Pomodoro> {
                                 "Start",
                                 style: TextStyle(fontSize: 28),
                               ),
-                              onPressed: () => startPomodoro(vm)),
+                              onPressed: () => startPomodoro(vm, next)),
                       SizedBox(height: 18.0),
                       if (next != null) Text("Next up: ${getStateName(next)}"),
                       if (next == null) Text(""),
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.
+                        ],
+                      )
                     ],
                   ),
                   circularStrokeCap: CircularStrokeCap.round,
@@ -165,128 +171,9 @@ class _PomodoroState extends State<Pomodoro> {
     stopwatch.stop();
   }
 
-  void startPomodoro(PomodoroViewModel vm) {
+  void startPomodoro(PomodoroViewModel vm, PomodoroState state) {
     stopwatch.start();
 
-    // setState(() {
-    //   timer = CountdownTimer(
-    //     Duration(seconds: appStore.state.settings.work),
-    //     Duration(seconds: 1),
-    //   );
-    //   elapsed = Duration.zero;
-    //   remaining = Duration(seconds: appStore.state.settings.work) -
-    //       Duration(seconds: 1);
-    // });
-
-    // timer.listen((duration) {
-    //   if (appStore.state.pomodoro.state != PomodoroState.work) {
-    //     timer?.cancel();
-    //     return;
-    //   }
-    //   setState(() {
-    //     elapsed = duration.elapsed;
-    //     remaining = duration.remaining;
-    //   });
-    // }, onDone: () {
-    //   timer?.cancel();
-    //   if (appStore.state.pomodoro.state == PomodoroState.work) {
-    //     if (appStore.state.pomodoro.checkmarks <
-    //         appStore.state.settings.checkmarks) {
-    //       _startShortBreak(vm);
-    //     } else {
-    //       _startLongBreak(vm);
-    //     }
-    //   }
-    //   if (appStore.state.pomodoro.state != PomodoroState.none) {
-    //     if (appStore.state.settings.playSounds) {
-    //       Pomodoro.player.play('tone1.mp3');
-    //     }
-    //     if (appStore.state.settings.vibration) {
-    //       Vibration.vibrate(pattern: [50, 200, 50, 200]);
-    //     }
-    //   }
-    // });
-
-    vm.setState(PomodoroState.work);
+    vm.setState(vm.pomodoro.state);
   }
-
-  // void _startShortBreak(PomodoroViewModel vm) {
-  //   stopTimers();
-
-  //   setState(() {
-  //     timer = CountdownTimer(
-  //       Duration(seconds: appStore.state.settings.shortBreak),
-  //       Duration(seconds: 1),
-  //     );
-  //     elapsed = Duration.zero;
-  //     remaining = Duration(seconds: appStore.state.settings.shortBreak) -
-  //         Duration(seconds: 1);
-  //   });
-
-  //   timer.listen((duration) {
-  //     if (appStore.state.pomodoro.state != PomodoroState.shortBreak) {
-  //       timer?.cancel();
-  //       return;
-  //     }
-  //     setState(() {
-  //       elapsed = duration.elapsed;
-  //       remaining = duration.remaining;
-  //     });
-  //   }, onDone: () {
-  //     timer?.cancel();
-  //     if (appStore.state.pomodoro.state == PomodoroState.shortBreak) {
-  //       _startWork(vm);
-  //     }
-  //     if (appStore.state.pomodoro.state != PomodoroState.none) {
-  //       if (appStore.state.settings.playSounds) {
-  //         Pomodoro.player.play('tone2.mp3');
-  //       }
-  //       if (appStore.state.settings.vibration) {
-  //         Vibration.vibrate(pattern: [50, 200, 50, 200]);
-  //       }
-  //     }
-  //   });
-
-  //   vm.setState(PomodoroState.shortBreak);
-  // }
-
-  // void _startLongBreak(PomodoroViewModel vm) {
-  //   stopTimers();
-
-  //   setState(() {
-  //     timer = CountdownTimer(
-  //       Duration(seconds: appStore.state.settings.longBreak),
-  //       Duration(seconds: 1),
-  //     );
-  //     elapsed = Duration.zero;
-  //     remaining = Duration(seconds: appStore.state.settings.longBreak) -
-  //         Duration(seconds: 1);
-  //   });
-
-  //   timer.listen((duration) {
-  //     if (appStore.state.pomodoro.state != PomodoroState.longBreak) {
-  //       timer?.cancel();
-  //       return;
-  //     }
-  //     setState(() {
-  //       elapsed = duration.elapsed;
-  //       remaining = duration.remaining;
-  //     });
-  //   }, onDone: () {
-  //     timer?.cancel();
-  //     if (appStore.state.pomodoro.state == PomodoroState.longBreak) {
-  //       _startWork(vm);
-  //     }
-  //     if (appStore.state.pomodoro.state != PomodoroState.none) {
-  //       if (appStore.state.settings.playSounds) {
-  //         Pomodoro.player.play('tone3.mp3');
-  //       }
-  //       if (appStore.state.settings.vibration) {
-  //         Vibration.vibrate();
-  //       }
-  //     }
-  //   });
-
-  //   vm.setState(PomodoroState.longBreak);
-  // }
 }
