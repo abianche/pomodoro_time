@@ -7,32 +7,79 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pomodoro_time/models/pomodoro.dart';
 import 'package:pomodoro_time/widgets/pomodoro_viewmodel.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
-import 'package:pomodoro_time/redux/store.dart';
 import 'package:pomodoro_time/extensions.dart';
-import 'package:quiver/async.dart';
-import 'package:vibration/vibration.dart';
 
 class Pomodoro extends StatefulWidget {
   const Pomodoro({Key key}) : super(key: key);
   static AudioCache player = AudioCache(prefix: 'sounds/');
+  static Stopwatch stopwatch = Stopwatch();
 
   @override
   _PomodoroState createState() => _PomodoroState();
 }
 
 class _PomodoroState extends State<Pomodoro> {
-  static CountdownTimer workTimer;
-  static CountdownTimer shortBreakTimer;
-  static CountdownTimer longBreakTimer;
+  PomodoroState previousState = PomodoroState.none;
 
-  Duration elapsed = Duration.zero;
-  Duration remaining = Duration.zero;
+  Duration remainingTime(PomodoroViewModel vm) {
+    PomodoroState currentState = vm.pomodoro.state;
+    if (vm.pomodoro.isPaused()) {
+      currentState = previousState;
+    }
+
+    if (currentState == PomodoroState.work) {
+      return Duration(seconds: vm.work) - Pomodoro.stopwatch?.elapsed;
+    }
+    if (currentState == PomodoroState.shortBreak) {
+      return Duration(seconds: vm.shortBreak) - Pomodoro.stopwatch?.elapsed;
+    }
+    if (currentState == PomodoroState.longBreak) {
+      return Duration(seconds: vm.longBreak) - Pomodoro.stopwatch?.elapsed;
+    }
+
+    return Duration.zero;
+  }
+
+  Duration currentTime(PomodoroViewModel vm) {
+    if (vm.pomodoro.isWorking()) {
+      return Duration(seconds: vm.work);
+    }
+    if (vm.pomodoro.isShortBreak()) {
+      return Duration(seconds: vm.shortBreak);
+    }
+    if (vm.pomodoro.isLongBreak()) {
+      return Duration(seconds: vm.longBreak);
+    }
+
+    return Duration.zero;
+  }
 
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, PomodoroViewModel>(
         converter: (store) => PomodoroViewModel.create(store),
         builder: (context, vm) {
+          PomodoroState next = PomodoroState.work;
+          if (vm.pomodoro.isWorking() && vm.checkmarks < vm.totalCheckmarks) {
+            next = PomodoroState.shortBreak;
+          }
+          if (vm.pomodoro.isWorking() && vm.checkmarks == vm.totalCheckmarks) {
+            next = PomodoroState.longBreak;
+          }
+          if (vm.pomodoro.isBreak()) {
+            next = PomodoroState.work;
+          }
+
+          if (vm.pomodoro.isWorking() || vm.pomodoro.isBreak()) {
+            if (Pomodoro.stopwatch.elapsed >= currentTime(vm)) {
+              Pomodoro.stopwatch.stop();
+              Pomodoro.stopwatch.reset();
+
+              vm.setState(next);
+              Pomodoro.stopwatch.start();
+            }
+          }
+
           return Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -41,24 +88,25 @@ class _PomodoroState extends State<Pomodoro> {
                 CircularPercentIndicator(
                   radius: MediaQuery.of(context).size.height / 2.5,
                   lineWidth: 30.0,
-                  percent: getCurrentPercentage(vm, elapsed.inSeconds / 60),
+                  percent: getCurrentPercentage(
+                      vm, Pomodoro.stopwatch?.elapsed?.inSeconds ?? 0 / 60),
+                  header: AutoSizeText(
+                    getStateName(vm.pomodoro.state),
+                    maxLines: 1,
+                    maxFontSize: 32.0,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 32.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   center: SizedBox(
                     width: MediaQuery.of(context).size.width / 2.5,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         AutoSizeText(
-                          getStateName(vm.state),
-                          maxLines: 1,
-                          maxFontSize: 32.0,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 32.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        AutoSizeText(
-                          remaining.printDuration(),
+                          remainingTime(vm).printDuration(),
                           maxLines: 1,
                           maxFontSize: 64.0,
                           overflow: TextOverflow.ellipsis,
@@ -70,69 +118,66 @@ class _PomodoroState extends State<Pomodoro> {
                       ],
                     ),
                   ),
+                  footer: Column(
+                    children: <Widget>[
+                      vm.pomodoro.state == PomodoroState.pause
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                FlatButton(
+                                  child: Text(
+                                    "Continue",
+                                    style: TextStyle(fontSize: 28),
+                                  ),
+                                  onPressed: () => continuePomodoro(vm),
+                                ),
+                                FlatButton(
+                                  child: Text(
+                                    "Stop",
+                                    style: TextStyle(fontSize: 28),
+                                  ),
+                                  onPressed: () => stopPomodoro(vm),
+                                ),
+                              ],
+                            )
+                          : vm.pomodoro.state == PomodoroState.none
+                              ? FlatButton(
+                                  child: Text(
+                                    "Start",
+                                    style: TextStyle(fontSize: 28),
+                                  ),
+                                  onPressed: () => startPomodoro(vm),
+                                )
+                              : FlatButton(
+                                  child: Text(
+                                    "Pause",
+                                    style: TextStyle(fontSize: 28),
+                                  ),
+                                  onPressed: () => pausePomodoro(vm),
+                                ),
+                      SizedBox(height: 18.0),
+                      next != null
+                          ? Text("Next up: ${getStateName(next)}")
+                          : Text(""),
+                      SizedBox(height: 18.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          for (var i = 0; i < vm.totalCheckmarks; i++)
+                            i < vm.checkmarks
+                                ? Icon(Icons.radio_button_checked)
+                                : Icon(Icons.radio_button_unchecked)
+                        ],
+                      )
+                    ],
+                  ),
+                  progressColor:
+                      vm.pomodoro.isPaused() ? Colors.grey : Colors.red,
                   circularStrokeCap: CircularStrokeCap.round,
                   animation: true,
                   animateFromLastPercent: true,
-                  // Column(
-                  //   children: <Widget>[
-                  //     Text(
-                  //         "State: ${vm.state.toString().split('.').last.toUpperCase()}"),
-                  //     Text(
-                  //         "Checkmarks: ${vm.checkmarks} of ${vm.totalCheckmarks}"),
-                  //   ],
-                  // ),
                   startAngle: 0.0,
                   reverse: false,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(
-                          Icons.play_arrow,
-                          size: 48.0,
-                        ),
-                        onPressed: vm.state != PomodoroState.work
-                            ? () => _startWork(vm)
-                            : null,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.pause_circle_outline,
-                          size: 48.0,
-                        ),
-                        onPressed: vm.state != PomodoroState.shortBreak
-                            ? () => _startShortBreak(vm)
-                            : null,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.pause_circle_filled,
-                          size: 48.0,
-                        ),
-                        onPressed: vm.state != PomodoroState.longBreak
-                            ? () => _startLongBreak(vm)
-                            : null,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 18.0),
-                FlatButton.icon(
-                  icon: Icon(Icons.restore),
-                  label: Text("Reset"),
-                  onPressed: () {
-                    vm.setState(PomodoroState.none);
-
-                    stopTimers();
-
-                    setState(() {
-                      elapsed = Duration.zero;
-                      remaining = Duration.zero;
-                    });
-                  },
                 ),
               ],
             ),
@@ -140,153 +185,83 @@ class _PomodoroState extends State<Pomodoro> {
         });
   }
 
-  void stopTimers() {
-    workTimer?.cancel();
-    shortBreakTimer?.cancel();
-    longBreakTimer?.cancel();
-
-    workTimer = null;
-    shortBreakTimer = null;
-    longBreakTimer = null;
-  }
-
-  double getCurrentPercentage(PomodoroViewModel vm, double current) {
-    switch (vm.state) {
+  double getCurrentPercentage(PomodoroViewModel vm, num current) {
+    switch (vm.pomodoro.state) {
       case PomodoroState.none:
         return 1.0;
       case PomodoroState.work:
-        return (1 - ((100 * current) / vm.work) / 100).toDouble();
+      case PomodoroState.pause:
+        return (1 - ((100 * current) / vm.work) / 100)
+            .clamp(0.0, 1.0)
+            .toDouble();
       case PomodoroState.shortBreak:
-        return (1 - ((100 * current) / vm.shortBreak) / 100).toDouble();
+        return (1 - ((100 * current) / vm.shortBreak) / 100)
+            .clamp(0.0, 1.0)
+            .toDouble();
       case PomodoroState.longBreak:
-        return (1 - ((100 * current) / vm.longBreak) / 100).toDouble();
+        return (1 - ((100 * current) / vm.longBreak) / 100)
+            .clamp(0.0, 1.0)
+            .toDouble();
       default:
         return 0.0;
     }
   }
 
-  void _startWork(PomodoroViewModel vm) {
-    stopTimers();
+  void pausePomodoro(PomodoroViewModel vm) {
+    Pomodoro.stopwatch.stop();
 
     setState(() {
-      workTimer = CountdownTimer(
-        Duration(minutes: appStore.state.settings.work),
-        Duration(seconds: 1),
-      );
-      elapsed = Duration.zero;
-      remaining = Duration(minutes: appStore.state.settings.work) -
-          Duration(seconds: 1);
+      previousState = vm.pomodoro.state;
     });
 
-    workTimer.listen((duration) {
-      if (appStore.state.pomodoro.state != PomodoroState.work) {
-        workTimer?.cancel();
-        return;
-      }
-      setState(() {
-        elapsed = duration.elapsed;
-        remaining = duration.remaining;
-      });
-    }, onDone: () {
-      // workTimer?.cancel();
-      // if (appStore.state.pomodoro.state == PomodoroState.work) {
-      //   if (appStore.state.pomodoro.checkmarks <
-      //       appStore.state.settings.checkmarks) {
-      //     _startShortBreak(vm);
-      //   } else {
-      //     _startLongBreak(vm);
-      //   }
-      // }
-      if (appStore.state.pomodoro.state != PomodoroState.none) {
-        if (appStore.state.settings.playSounds) {
-          Pomodoro.player.play('tone1.mp3');
-        }
-        if (appStore.state.settings.vibration) {
-          Vibration.vibrate(pattern: [50, 200, 50, 200]);
-        }
-      }
-    });
+    vm.setState(PomodoroState.pause);
+  }
+
+  void continuePomodoro(PomodoroViewModel vm) {
+    Pomodoro.stopwatch.start();
+
+    vm.setState(previousState);
+  }
+
+  void startPomodoro(PomodoroViewModel vm) {
+    Pomodoro.stopwatch.start();
 
     vm.setState(PomodoroState.work);
   }
 
-  void _startShortBreak(PomodoroViewModel vm) {
-    stopTimers();
+  void stopPomodoro(PomodoroViewModel vm) async {
+    Pomodoro.stopwatch.stop();
 
-    setState(() {
-      shortBreakTimer = CountdownTimer(
-        Duration(minutes: appStore.state.settings.shortBreak),
-        Duration(seconds: 1),
-      );
-      elapsed = Duration.zero;
-      remaining = Duration(minutes: appStore.state.settings.shortBreak) -
-          Duration(seconds: 1);
-    });
+    bool confirmed = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Stop Pomodoro?"),
+            content: Text("Do you want to stop the current Pomodoro time?"),
+            actions: [
+              FlatButton(
+                child:
+                    Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        });
 
-    shortBreakTimer.listen((duration) {
-      if (appStore.state.pomodoro.state != PomodoroState.shortBreak) {
-        shortBreakTimer?.cancel();
-        return;
-      }
-      setState(() {
-        elapsed = duration.elapsed;
-        remaining = duration.remaining;
-      });
-    }, onDone: () {
-      // shortBreakTimer?.cancel();
-      // if (appStore.state.pomodoro.state == PomodoroState.shortBreak) {
-      //   _startWork(vm);
-      // }
-      if (appStore.state.pomodoro.state != PomodoroState.none) {
-        if (appStore.state.settings.playSounds) {
-          Pomodoro.player.play('tone2.mp3');
-        }
-        if (appStore.state.settings.vibration) {
-          Vibration.vibrate(pattern: [50, 200, 50, 200]);
-        }
-      }
-    });
+    if (confirmed == null || !confirmed) {
+      return;
+    }
 
-    vm.setState(PomodoroState.shortBreak);
-  }
+    Pomodoro.stopwatch.reset();
 
-  void _startLongBreak(PomodoroViewModel vm) {
-    stopTimers();
-
-    setState(() {
-      longBreakTimer = CountdownTimer(
-        Duration(minutes: appStore.state.settings.longBreak),
-        Duration(seconds: 1),
-      );
-      elapsed = Duration.zero;
-      remaining = Duration(minutes: appStore.state.settings.longBreak) -
-          Duration(seconds: 1);
-    });
-
-    longBreakTimer.listen((duration) {
-      if (appStore.state.pomodoro.state != PomodoroState.longBreak) {
-        longBreakTimer?.cancel();
-        return;
-      }
-      setState(() {
-        elapsed = duration.elapsed;
-        remaining = duration.remaining;
-      });
-    }, onDone: () {
-      //   longBreakTimer?.cancel();
-      //   if (appStore.state.pomodoro.state == PomodoroState.longBreak) {
-      //     _startWork(vm);
-      //   }
-      if (appStore.state.pomodoro.state != PomodoroState.none) {
-        if (appStore.state.settings.playSounds) {
-          Pomodoro.player.play('tone3.mp3');
-        }
-        if (appStore.state.settings.vibration) {
-          Vibration.vibrate();
-        }
-      }
-    });
-
-    vm.setState(PomodoroState.longBreak);
+    vm.setState(PomodoroState.none);
   }
 }

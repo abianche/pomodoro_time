@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum PomodoroState { none, work, shortBreak, longBreak }
+enum PomodoroState { none, work, shortBreak, longBreak, pause }
 
 /// FIXME: check where to place it
 String getStateName(PomodoroState state) {
@@ -8,11 +8,13 @@ String getStateName(PomodoroState state) {
     case PomodoroState.none:
       return "";
     case PomodoroState.work:
-      return "Work";
+      return "Working";
     case PomodoroState.shortBreak:
       return "Short break";
     case PomodoroState.longBreak:
       return "Long break";
+    case PomodoroState.pause:
+      return "Paused";
     default:
       return "";
   }
@@ -27,6 +29,13 @@ class Pomodoro {
     @required this.state,
     @required this.checkmarks,
   });
+
+  bool isNone() => this.state == PomodoroState.none;
+  bool isWorking() => this.state == PomodoroState.work;
+  bool isShortBreak() => this.state == PomodoroState.shortBreak;
+  bool isLongBreak() => this.state == PomodoroState.longBreak;
+  bool isBreak() => this.isShortBreak() || this.isLongBreak();
+  bool isPaused() => this.state == PomodoroState.pause;
 
   Pomodoro.initialState()
       : state = PomodoroState.none,

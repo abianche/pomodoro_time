@@ -27,5 +27,11 @@ Pomodoro pomodoroReducer(Pomodoro state, dynamic action) {
     );
   }
 
+  if (action is PauseAction) {
+    return state.copyWith(
+      state: PomodoroState.pause,
+    );
+  }
+
   return state;
 }
