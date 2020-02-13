@@ -8,6 +8,7 @@ import 'package:timer_builder/timer_builder.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key key}) : super(key: key);
+  static Stopwatch stopwatch = Stopwatch();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class HomePage extends StatelessWidget {
                       return AlertDialog(
                         title: Text("Stop Pomodoro?"),
                         content: Text(
-                            "To change the settings, the current Pomodoro time has to be stopped.Do you wish to continue?"),
+                            "To change the settings, the current Pomodoro time has to be stopped. Do you wish to continue?"),
                         actions: [
                           FlatButton(
                             child: Text(MaterialLocalizations.of(context)
@@ -54,6 +55,9 @@ class HomePage extends StatelessWidget {
                 }
 
                 appStore.dispatch(StopAction());
+                Pomodoro.stopwatch?.stop();
+                Pomodoro.stopwatch?.reset();
+
                 await Navigator.of(context).pushNamed(AppRoutes.settings);
               })
         ],

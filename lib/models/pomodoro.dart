@@ -34,9 +34,7 @@ class Pomodoro {
   bool isWorking() => this.state == PomodoroState.work;
   bool isShortBreak() => this.state == PomodoroState.shortBreak;
   bool isLongBreak() => this.state == PomodoroState.longBreak;
-  bool isBreak() =>
-      this.state == PomodoroState.shortBreak ||
-      this.state == PomodoroState.longBreak;
+  bool isBreak() => this.isShortBreak() || this.isLongBreak();
   bool isPaused() => this.state == PomodoroState.pause;
 
   Pomodoro.initialState()
