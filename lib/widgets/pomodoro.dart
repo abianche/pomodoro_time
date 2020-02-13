@@ -28,13 +28,13 @@ class _PomodoroState extends State<Pomodoro> {
     }
 
     if (currentState == PomodoroState.work) {
-      return Duration(seconds: vm.work) - Pomodoro.stopwatch?.elapsed;
+      return Duration(minutes: vm.work) - Pomodoro.stopwatch?.elapsed;
     }
     if (currentState == PomodoroState.shortBreak) {
-      return Duration(seconds: vm.shortBreak) - Pomodoro.stopwatch?.elapsed;
+      return Duration(minutes: vm.shortBreak) - Pomodoro.stopwatch?.elapsed;
     }
     if (currentState == PomodoroState.longBreak) {
-      return Duration(seconds: vm.longBreak) - Pomodoro.stopwatch?.elapsed;
+      return Duration(minutes: vm.longBreak) - Pomodoro.stopwatch?.elapsed;
     }
 
     return Duration.zero;
@@ -42,13 +42,13 @@ class _PomodoroState extends State<Pomodoro> {
 
   Duration currentTime(PomodoroViewModel vm) {
     if (vm.pomodoro.isWorking()) {
-      return Duration(seconds: vm.work);
+      return Duration(minutes: vm.work);
     }
     if (vm.pomodoro.isShortBreak()) {
-      return Duration(seconds: vm.shortBreak);
+      return Duration(minutes: vm.shortBreak);
     }
     if (vm.pomodoro.isLongBreak()) {
-      return Duration(seconds: vm.longBreak);
+      return Duration(minutes: vm.longBreak);
     }
 
     return Duration.zero;
@@ -89,7 +89,7 @@ class _PomodoroState extends State<Pomodoro> {
                   radius: MediaQuery.of(context).size.height / 2.5,
                   lineWidth: 30.0,
                   percent: getCurrentPercentage(
-                      vm, Pomodoro.stopwatch?.elapsed?.inSeconds ?? 0 / 60),
+                      vm, Pomodoro.stopwatch?.elapsed?.inMinutes ?? 0 / 60),
                   header: AutoSizeText(
                     getStateName(vm.pomodoro.state),
                     maxLines: 1,
