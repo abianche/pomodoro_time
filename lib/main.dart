@@ -5,6 +5,7 @@ import 'package:pomodoro_time/redux/actions/settings_actions.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:pomodoro_time/redux/store.dart';
 import 'package:pomodoro_time/routes.dart';
+import 'package:pomodoro_time/theme.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,27 +33,8 @@ class App extends StatelessWidget {
         title: 'Pomodoro Time',
         initialRoute: AppRoutes.home,
         onGenerateRoute: buildOnGenerateRuoute,
-        theme: ThemeData(
-          appBarTheme: AppBarTheme(
-            color: Colors.white,
-            textTheme: TextTheme(
-              title: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-            iconTheme: IconThemeData(
-              color: Colors.black,
-            ),
-            elevation: 0.0,
-          ),
-          scaffoldBackgroundColor: Colors.white,
-        ),
-        darkTheme: ThemeData(
-          appBarTheme: AppBarTheme(
-            elevation: 0.0,
-          ),
-          brightness: Brightness.dark,
-        ),
+        theme: buildThemeData(context),
+        darkTheme: buildDarkThemeData(context),
         themeMode: vm.themeMode,
       ),
     );

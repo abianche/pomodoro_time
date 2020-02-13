@@ -6,7 +6,7 @@ enum PomodoroState { none, work, shortBreak, longBreak, pause }
 String getStateName(PomodoroState state) {
   switch (state) {
     case PomodoroState.none:
-      return "-";
+      return "";
     case PomodoroState.work:
       return "Working";
     case PomodoroState.shortBreak:
