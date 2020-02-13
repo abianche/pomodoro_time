@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pomodoro_time/models/pomodoro.dart';
+import 'package:pomodoro_time/theme.dart';
 import 'package:pomodoro_time/widgets/pomodoro_viewmodel.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
 import 'package:pomodoro_time/extensions.dart';
@@ -172,7 +173,7 @@ class _PomodoroState extends State<Pomodoro> {
                     ],
                   ),
                   progressColor:
-                      vm.pomodoro.isPaused() ? Colors.grey : Colors.red,
+                      vm.pomodoro.isPaused() ? Colors.grey : Palette.blood_red,
                   circularStrokeCap: CircularStrokeCap.round,
                   animation: true,
                   animateFromLastPercent: true,
