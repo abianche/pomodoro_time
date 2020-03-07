@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pomodoro_time/models/pomodoro.dart';
+import 'package:pomodoro_time/notifications.dart';
 import 'package:pomodoro_time/theme.dart';
 import 'package:pomodoro_time/widgets/pomodoro_viewmodel.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
@@ -55,21 +56,27 @@ class _PomodoroState extends State<Pomodoro> {
     return Duration.zero;
   }
 
+  PomodoroState nextState(PomodoroViewModel vm) {
+    PomodoroState next = PomodoroState.work;
+    if (vm.pomodoro.isWorking() && vm.checkmarks < vm.totalCheckmarks) {
+      next = PomodoroState.shortBreak;
+    }
+    if (vm.pomodoro.isWorking() && vm.checkmarks == vm.totalCheckmarks) {
+      next = PomodoroState.longBreak;
+    }
+    if (vm.pomodoro.isBreak()) {
+      next = PomodoroState.work;
+    }
+
+    return next;
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, PomodoroViewModel>(
         converter: (store) => PomodoroViewModel.create(store),
         builder: (context, vm) {
-          PomodoroState next = PomodoroState.work;
-          if (vm.pomodoro.isWorking() && vm.checkmarks < vm.totalCheckmarks) {
-            next = PomodoroState.shortBreak;
-          }
-          if (vm.pomodoro.isWorking() && vm.checkmarks == vm.totalCheckmarks) {
-            next = PomodoroState.longBreak;
-          }
-          if (vm.pomodoro.isBreak()) {
-            next = PomodoroState.work;
-          }
+          PomodoroState next = nextState(vm);
 
           if (vm.pomodoro.isWorking() || vm.pomodoro.isBreak()) {
             if (Pomodoro.stopwatch.elapsed >= currentTime(vm)) {
@@ -208,7 +215,7 @@ class _PomodoroState extends State<Pomodoro> {
     }
   }
 
-  void pausePomodoro(PomodoroViewModel vm) {
+  void pausePomodoro(PomodoroViewModel vm) async {
     Pomodoro.stopwatch.stop();
 
     setState(() {
@@ -216,18 +223,27 @@ class _PomodoroState extends State<Pomodoro> {
     });
 
     vm.setState(PomodoroState.pause);
+
+    await NotificationManager()
+        .showOngoingNotification(0, "Pomodoro Time is paused", null);
   }
 
-  void continuePomodoro(PomodoroViewModel vm) {
+  void continuePomodoro(PomodoroViewModel vm) async {
     Pomodoro.stopwatch.start();
 
     vm.setState(previousState);
+
+    await NotificationManager()
+        .showOngoingNotification(0, "Pomodoro Time is running", null);
   }
 
-  void startPomodoro(PomodoroViewModel vm) {
+  void startPomodoro(PomodoroViewModel vm) async {
     Pomodoro.stopwatch.start();
 
     vm.setState(PomodoroState.work);
+
+    await NotificationManager()
+        .showOngoingNotification(0, "Pomodoro Time is running", null);
   }
 
   void stopPomodoro(PomodoroViewModel vm) async {
@@ -264,5 +280,7 @@ class _PomodoroState extends State<Pomodoro> {
     Pomodoro.stopwatch.reset();
 
     vm.setState(PomodoroState.none);
+
+    await NotificationManager().cancel(0);
   }
 }

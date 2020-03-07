@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pomodoro_time/models/pomodoro.dart' show PomodoroState;
+import 'package:pomodoro_time/notifications.dart';
 import 'package:pomodoro_time/widgets/pomodoro.dart';
 import 'package:pomodoro_time/redux/actions/pomodoro_actions.dart';
 import 'package:pomodoro_time/redux/store.dart';
@@ -58,36 +58,17 @@ class HomePage extends StatelessWidget {
                   Pomodoro.stopwatch?.stop();
                   Pomodoro.stopwatch?.reset();
 
+                  await NotificationManager().cancel(0);
+
                   await Navigator.of(context).pushNamed(AppRoutes.settings);
                 })
           ],
         ),
         body: Center(
-          child: Center(
-            child: IconButton(
-                icon: Icon(Icons.ac_unit), onPressed: _showOngoingNotification),
+          child: TimerBuilder.periodic(
+            Duration(seconds: 1),
+            builder: (context) => Pomodoro(),
           ),
-          // child: TimerBuilder.periodic(
-          //   Duration(seconds: 1),
-          //   builder: (context) => Pomodoro(),
-          // ),
         ),
       );
-}
-
-Future<void> _showOngoingNotification() async {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'your channel id', 'your channel name', 'your channel description',
-      importance: Importance.Max,
-      priority: Priority.High,
-      ongoing: true,
-      autoCancel: false);
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-  var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin.show(0, 'ongoing notification title',
-      'ongoing notification body', platformChannelSpecifics);
 }
