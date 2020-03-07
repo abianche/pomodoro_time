@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:pomodoro_time/notifications.dart';
 import 'package:pomodoro_time/pages/settings_viewmodel.dart';
 import 'package:pomodoro_time/redux/actions/settings_actions.dart';
 import 'package:pomodoro_time/redux/app_state.dart';
@@ -7,7 +8,13 @@ import 'package:pomodoro_time/redux/store.dart';
 import 'package:pomodoro_time/routes.dart';
 import 'package:pomodoro_time/theme.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await NotificationManager.init();
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
